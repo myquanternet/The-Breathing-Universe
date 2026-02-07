@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Breathing Universe - Interactive Portal</title>
+    <meta name="description"
+        content="Interactive visualization of Arnon Daniel Katz's Breathing Universe theory - Exploring the fundamental architecture of reality through sacred geometry">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e14;
+            color: #e0e6ed;
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* UI Controls Panel */
+        #controls-panel {
+            background: rgba(10, 20, 30, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            min-width: 260px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #controls-panel.minimized {
+            transform: translateX(calc(100% + 20px));
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #controls-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+            z-index: 500;
+        }
+
+        .ui-toggle-main {
+            background: rgba(0, 242, 255, 0.05);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            color: #00d4ff;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 9px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .ui-toggle-main:hover {
+            background: rgba(0, 242, 255, 0.15);
+            border-color: #00d4ff;
+        }
+
+        #controls-panel h2 {
+            font-size: 11px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.8;
+            border-left: 2px solid #00d4ff;
+            padding-left: 10px;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 12px;
+            color: #a0aec0;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #00d4ff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: #00d4ff;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+        }
+
+        .value-display {
+            font-size: 11px;
+            color: #00d4ff;
+            font-weight: 600;
+            float: right;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px 12px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 6px;
+            color: #00d4ff;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+        }
+
+        .toggle-btn.active {
+            background: rgba(0, 212, 255, 0.3);
+            border-color: #00d4ff;
+            box-shadow: 0 0 16px rgba(0, 212, 255, 0.5);
+        }
+
+        #terminal-toggle-btn,
+        #pause-toggle-btn {
+            float: right;
+            background: transparent;
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            color: #00d4ff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: -4px;
+            margin-left: 8px;
+        }
+
+        #terminal-toggle-btn:hover,
+        #pause-toggle-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Info Panel */
+        #info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(26, 35, 50, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            max-width: 400px;
+            z-index: 100;
+        }
+
+        #info-panel h1 {
+            font-size: 18px;
+            color: #ffd700;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        #info-panel p {
+            font-size: 12px;
+            color: #a0aec0;
+            line-height: 1.6;
+        }
+
+        #fps-counter {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(26, 35, 50, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #00d4ff;
+            font-weight: 600;
+            z-index: 100;
+        }
+
+        /* Custom Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 10px 15px;
+            background: rgba(0, 212, 255, 0.03);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-group:hover {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            background: rgba(0, 10, 20, 0.5);
+        }
+
+        .checkbox-group input[type="checkbox"]:checked {
+            background: #00d4ff;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .checkbox-group input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0a0e14;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .checkbox-group label {
+            font-size: 11px;
+            color: #a0aec0;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0e14;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 212, 255, 0.2);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: #00d4ff;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        /* CONSOLE OVERLAY */
+        #console-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background: rgba(10, 14, 20, 0.95);
+            border-top: 2px solid #00d4ff;
+            display: none;
+            flex-direction: column;
+            z-index: 2000;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        #console-overlay.visible {
+            display: flex;
+        }
+
+        #console-log {
+            flex: 1;
+            overflow-y: auto;
+            color: #00d4ff;
+            font-size: 13px;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+
+        #console-input-line {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid rgba(0, 212, 255, 0.3);
+            padding-top: 10px;
+        }
+
+        #console-prompt {
+            color: #00d4ff;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        #console-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+        }
+
+        .log-success {
+            color: #00ffaa;
+        }
+
+        .log-error {
+            color: #ff4444;
+        }
+
+        .log-info {
+            color: #88ccff;
+        }
+
+        #quantum-coords {
+            position: fixed;
+            top: 25px;
+            right: 160px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            color: rgba(0, 212, 255, 0.4);
+            letter-spacing: 1px;
+            pointer-events: none;
+            text-align: right;
+            z-index: 1000;
+        }
+
+        #floating-label {
+            position: fixed;
+            pointer-events: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9px;
+            white-space: nowrap;
+            z-index: 900;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <div class="loading-text">INITIALIZING QUANTUM SPACE...</div>
+    </div>
+
+    <!-- Console Overlay -->
+    <div id="console-overlay">
+        <div id="console-log">
+            <div class="log-entry log-info">> SYSTEM READY. PRESS '~' TO TOGGLE CONSOLE.</div>
+            <div class="log-entry log-info">> TYPE 'help' FOR COMMANDS.</div>
+        </div>
+        <div id="console-input-line">
+            <span id="console-prompt">NONI_OS></span>
+            <input type="text" id="console-input" placeholder="Enter command..." autocomplete="off">
+        </div>
+    </div>
+
+    <!-- Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Quantum Coordinates -->
+    <div id="quantum-coords">
+        P_m : [ <span id="coord-x">0.0</span>, <span id="coord-y">0.0</span>, <span id="coord-z">0.0</span> ]
+    </div>
+
+    <!-- Floating Label -->
+    <div id="floating-label">P_m : 0.00</div>
+
+    <!-- FPS Counter -->
+    <div id="fps-counter">FPS: <span id="fps-value">60</span></div>
+
+    <!-- Info Panel -->
+    <div id="info-panel">
+        <h1>🌌 The Breathing Universe</h1>
+        <p>Interactive visualization of the fundamental architecture of reality. Use mouse to orbit, scroll to zoom.</p>
+    </div>
+
+    <!-- Controls Panel -->
+    <div id="controls-wrapper">
+        <button class="ui-toggle-main"
+            onclick="document.getElementById('controls-panel').classList.toggle('minimized')">Toggle HUD</button>
+        <div id="controls-panel">
+            <button id="terminal-toggle-btn" onclick="toggleTerminal()">_TERMINAL</button>
+            <h2>⚙️ QUANTUM_CONFIG</h2>
+
+            <div class="checkbox-group"
+                onclick="const ck = document.getElementById('auto-rotate'); ck.checked = !ck.checked; ck.dispatchEvent(new Event('change')); event.stopPropagation();">
+                <input type="checkbox" id="auto-rotate" checked onclick="event.stopPropagation()">
+                <label>Auto-Rotation</label>
+            </div>
+
+            <div class="control-group">
+                <label>O:M Radius (Major R) <span class="value-display" id="px-value">25.0</span></label>
+                <input type="range" id="point-x" min="0" max="50" step="0.5" value="25">
+            </div>
+
+            <div class="control-group">
+                <label>Minor Radius (r) <span class="value-display" id="minor-r-value">10.0</span></label>
+                <input type="range" id="minor-r" min="0" max="30" step="0.5" value="10">
+            </div>
+
+            <div class="control-group">
+                <label>Revolution (Theta) <span class="value-display" id="theta-value">0°</span></label>
+                <input type="range" id="rev-theta" min="0" max="360" step="1" value="0">
+            </div>
+
+            <div class="control-group">
+                <label>Section Angle (Phi) <span class="value-display" id="phi-value">0°</span></label>
+                <input type="range" id="sec-phi" min="0" max="360" step="1" value="0">
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // ============================================
+        // 🌌 THE BREATHING UNIVERSE - PHASE 1
+        // Quantum Space with Orthogonal Planes
+        // ============================================
+
+        console.log('🚀 Initializing The Breathing Universe Portal...');
+
+        // Scene Setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0e14);
+        scene.fog = new THREE.Fog(0x0a0e14, 50, 200);
+
+        // Camera Setup
+        const camera = new THREE.PerspectiveCamera(
+            60,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(80, 60, 80);
+        camera.lookAt(0, 0, 0);
+
+        // Renderer Setup
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Orbit Controls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.minDistance = 20;
+        controls.maxDistance = 200;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0x00d4ff, 0.6);
+        directionalLight.position.set(50, 50, 50);
+        scene.add(directionalLight);
+
+        // ============================================
+        // 🌊 QUANTUM WAVE SHADER
+        // ============================================
+
+        const quantumWaveShader = {
+            uniforms: {
+                time: { value: 0 },
+                frequency: { value: 2.0 },
+                amplitude: { value: 0.5 },
+                opacity: { value: 0.25 },
+                color: { value: new THREE.Color(0x00d4ff) }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                varying vec3 vPosition;
+                
+                void main() {
+                    vUv = uv;
+                    vPosition = position;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float time;
+                uniform float frequency;
+                uniform float amplitude;
+                uniform float opacity;
+                uniform vec3 color;
+                
+                varying vec2 vUv;
+                varying vec3 vPosition;
+                
+                void main() {
+                    // Quantum wave pattern
+                    float wave1 = sin(vPosition.x * frequency + time) * amplitude;
+                    float wave2 = sin(vPosition.y * frequency + time * 1.3) * amplitude;
+                    float wave3 = sin(vPosition.z * frequency + time * 0.7) * amplitude;
+                    
+                    float combinedWave = (wave1 + wave2 + wave3) / 3.0;
+                    
+                    // Pure Wave intensity (No internal grid)
+                    float finalIntensity = 0.6 + combinedWave * 0.4;
+                    
+                    vec3 finalColor = color * finalIntensity;
+                    float finalOpacity = opacity * (0.8 + combinedWave * 0.2);
+                    
+                    gl_FragColor = vec4(finalColor, finalOpacity);
+                }
+            `
+        };
+
+        const revPathShader = {
+            uniforms: {
+                color1: { value: new THREE.Color(0x00d4ff) },
+                color2: { value: new THREE.Color(0x0055ff) },
+                opacity: { value: 0.3 }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 color1;
+                uniform vec3 color2;
+                uniform float opacity;
+                varying vec2 vUv;
+                void main() {
+                    // Gradient along the length of the torus (vUv.x)
+                    vec3 finalColor = mix(color1, color2, vUv.x);
+                    gl_FragColor = vec4(finalColor, opacity);
+                }
+            `
+        };
+
+        // ============================================
+        // 📐 ORTHOGONAL PLANES (100 units)
+        // ============================================
+
+        const planeSize = 100;
+        const planes = {};
+
+        function createQuantumPlane(name, rotation, position) {
+            const geometry = new THREE.PlaneGeometry(planeSize, planeSize, 50, 50);
+            const material = new THREE.ShaderMaterial({
+                uniforms: THREE.UniformsUtils.clone(quantumWaveShader.uniforms),
+                vertexShader: quantumWaveShader.vertexShader,
+                fragmentShader: quantumWaveShader.fragmentShader,
+                transparent: true,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+
+            const plane = new THREE.Mesh(geometry, material);
+            plane.rotation.set(rotation.x, rotation.y, rotation.z);
+            plane.position.set(position.x, position.y, position.z);
+
+            scene.add(plane);
+            return plane;
+        }
+
+        // XY Plane (Horizontal)
+        planes.xy = createQuantumPlane('xy',
+            { x: 0, y: 0, z: 0 },
+            { x: 0, y: 0, z: 0 }
+        );
+
+        // XZ Plane (Vertical - Depth)
+        planes.xz = createQuantumPlane('xz',
+            { x: Math.PI / 2, y: 0, z: 0 },
+            { x: 0, y: 0, z: 0 }
+        );
+
+        // YZ Plane (Vertical - Lateral)
+        planes.yz = createQuantumPlane('yz',
+            { x: 0, y: Math.PI / 2, z: 0 },
+            { x: 0, y: 0, z: 0 }
+        );
+
+        // Set different colors for each plane
+        planes.xy.material.uniforms.color.value = new THREE.Color(0x00d4ff); // Cyan
+        planes.xz.material.uniforms.color.value = new THREE.Color(0x0088cc); // Deep Cyan
+        planes.yz.material.uniforms.color.value = new THREE.Color(0x00aaee); // Light Cyan
+
+        // Hide by default
+        Object.values(planes).forEach(p => p.visible = false);
+
+        console.log('✅ Quantum planes initialized (Hidden)');
+
+        // ============================================
+        // 🎯 AXIS INDICATORS
+        // ============================================
+
+        // Central Singularity (Origin)
+        const originGeo = new THREE.SphereGeometry(0.5, 16, 16);
+        const originMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.5 });
+        const originPoint = new THREE.Mesh(originGeo, originMat);
+        scene.add(originPoint);
+
+        // --- FLOOR GRID ---
+        const gridHelper = new THREE.GridHelper(200, 20, 0x00d4ff, 0x112233);
+        // Default GridHelper is on XZ plane (Floor)
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.15;
+        scene.add(gridHelper);
+
+        // --- UTILS ---
+        function log(msg, type = '') {
+            const div = document.createElement('div');
+            div.className = 'log-entry ' + type;
+            div.textContent = '> ' + msg;
+            const logEl = document.getElementById('console-log');
+            if (logEl) {
+                logEl.appendChild(div);
+                logEl.scrollTop = logEl.scrollHeight;
+            }
+        }
+
+        function toggleTerminal() {
+            const consoleOverlay = document.getElementById('console-overlay');
+            const consoleInput = document.getElementById('console-input');
+            if (consoleOverlay) {
+                consoleOverlay.classList.toggle('visible');
+                if (consoleOverlay.classList.contains('visible') && consoleInput) {
+                    consoleInput.focus();
+                }
+            }
+        }
+        window.toggleTerminal = toggleTerminal;
+
+        // Key Listener for Console
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '`' || e.key === '~') {
+                e.preventDefault();
+                toggleTerminal();
+            }
+        });
+
+        // --- QUANTUM POINT ---
+        const quantumPointGeo = new THREE.SphereGeometry(1.5, 32, 32);
+        const quantumPointMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const quantumPoint = new THREE.Mesh(quantumPointGeo, quantumPointMat);
+
+        // Add a glow/halo to the point
+        const glowGeo = new THREE.SphereGeometry(3.0, 32, 32);
+        const glowMat = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.3
+        });
+        const glow = new THREE.Mesh(glowGeo, glowMat);
+        quantumPoint.add(glow);
+
+        scene.add(quantumPoint);
+        window.quantumPoint = quantumPoint;
+
+        // --- REVOLUTION PATH (CIRCLE) ---
+        // Using a TorusGeometry with a custom gradient shader
+        let pathGeo = new THREE.TorusGeometry(25, 0.12, 16, 100);
+        const pathMat = new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.clone(revPathShader.uniforms),
+            vertexShader: revPathShader.vertexShader,
+            fragmentShader: revPathShader.fragmentShader,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        const revPath = new THREE.Mesh(pathGeo, pathMat);
+        revPath.rotation.x = Math.PI / 2;
+        scene.add(revPath);
+        window.revPath = revPath;
+
+        let orbitRadius = 25.0;
+        let orbitTheta = 0;
+        let minorRadius = 10.0;
+        let sectionPhi = 0;
+        let isPaused = false;
+
+        window.togglePause = () => {
+            isPaused = !isPaused;
+            const ck = document.getElementById('auto-rotate');
+            if (ck) ck.checked = !isPaused;
+            log(`System ${isPaused ? 'PAUSED' : 'RESUMED'}`, 'log-info');
+        };
+
+        // --- SECTION PATH (VERTICAL CIRCLE) ---
+        const secPathGeo = new THREE.TorusGeometry(10, 0.05, 12, 100);
+        const secPathMat = new THREE.MeshBasicMaterial({ color: 0xff00aa, transparent: true, opacity: 0.3 });
+        const secPath = new THREE.Mesh(secPathGeo, secPathMat);
+        scene.add(secPath);
+
+        // --- TORUS SURFACE POINT ---
+        const torusPoint = new THREE.Mesh(
+            new THREE.SphereGeometry(1.0, 32, 32),
+            new THREE.MeshBasicMaterial({ color: 0xff00aa })
+        );
+        scene.add(torusPoint);
+        window.torusPoint = torusPoint;
+
+        // --- AXIS O:M (RADIAL LINE) ---
+        const axisLineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0)]);
+        const axisLineMat = new THREE.LineBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.3 });
+        const axisLine = new THREE.Line(axisLineGeo, axisLineMat);
+        scene.add(axisLine);
+        window.axisLine = axisLine;
+
+        window.updateQuantumPos = () => {
+            const radTheta = orbitTheta * (Math.PI / 180);
+            const radPhi = sectionPhi * (Math.PI / 180);
+
+            // Center of the section (Pm)
+            quantumPoint.position.x = orbitRadius * Math.cos(radTheta);
+            quantumPoint.position.y = 0;
+            quantumPoint.position.z = orbitRadius * Math.sin(radTheta);
+
+            // Point on the torus surface
+            // x = (R + r*cos(phi)) * cos(theta)
+            // y = r * sin(phi)
+            // z = (R + r*cos(phi)) * sin(theta)
+            const torusX = (orbitRadius + minorRadius * Math.cos(radPhi)) * Math.cos(radTheta);
+            const torusY = minorRadius * Math.sin(radPhi);
+            const torusZ = (orbitRadius + minorRadius * Math.cos(radPhi)) * Math.sin(radTheta);
+            torusPoint.position.set(torusX, torusY, torusZ);
+
+            // Update Section Circle Position & Orientation
+            secPath.position.copy(quantumPoint.position);
+
+            // Perpendicular to O:M: The normal of the circle plane should be the radial vector
+            const radialVec = new THREE.Vector3(Math.cos(radTheta), 0, Math.sin(radTheta));
+            const tangentVec = new THREE.Vector3(-Math.sin(radTheta), 0, Math.cos(radTheta));
+
+            // Perpendicular to PATH: The normal along the movement tangent
+            secPath.lookAt(quantumPoint.position.clone().add(tangentVec));
+
+            // Update Radial Axis Line
+            axisLine.geometry.dispose();
+            axisLine.geometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, 0, 0),
+                new THREE.Vector3(quantumPoint.position.x, 0, quantumPoint.position.z)
+            ]);
+
+            // Update UI
+            if (document.getElementById('px-value')) document.getElementById('px-value').textContent = orbitRadius.toFixed(1);
+            if (document.getElementById('minor-r-value')) document.getElementById('minor-r-value').textContent = minorRadius.toFixed(1);
+            if (document.getElementById('theta-value')) document.getElementById('theta-value').textContent = Math.round(orbitTheta) + '°';
+            if (document.getElementById('phi-value')) document.getElementById('phi-value').textContent = Math.round(sectionPhi) + '°';
+
+            // Update Revolution Path
+            revPath.geometry.dispose();
+            revPath.geometry = new THREE.TorusGeometry(Math.max(0.1, orbitRadius), 0.08, 12, 100);
+
+            // Update Section Path Geometry
+            secPath.geometry.dispose();
+            secPath.geometry = new THREE.TorusGeometry(Math.max(0.1, minorRadius), 0.05, 12, 100);
+
+            // log(`Pm & Torus point updated.`, 'log-info'); // Silenced for performance
+        };
+
+        // ============================================
+        // 🎮 UI CONTROLS
+        // ============================================
+
+        // Plane visibility toggles
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const planeName = btn.dataset.plane;
+                btn.classList.toggle('active');
+                planes[planeName].visible = btn.classList.contains('active');
+            });
+        });
+
+        // Initialize position
+        window.updateQuantumPos();
+
+        // Wave speed (Internal state only now)
+        let waveSpeed = 1.0;
+
+        // ============================================
+        // 🔄 ANIMATION LOOP
+        // ============================================
+
+        let time = 0;
+        let frameCount = 0;
+        let lastTime = performance.now();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update Coordinates (Subtle)
+            if (window.quantumPoint) {
+                const pos = window.quantumPoint.position;
+                document.getElementById('coord-x').textContent = pos.x.toFixed(2);
+                document.getElementById('coord-y').textContent = pos.y.toFixed(2);
+                document.getElementById('coord-z').textContent = pos.z.toFixed(2);
+
+                // Floating Label Projection
+                const vector = pos.clone();
+                vector.project(camera);
+
+                const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (-(vector.y * 0.5) + 0.5) * window.innerHeight;
+
+                const fLabel = document.getElementById('floating-label');
+                fLabel.style.left = (x + 15) + 'px';
+                fLabel.style.top = (y - 15) + 'px';
+                fLabel.innerHTML = `P_m(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)})`;
+
+                // Hide label if point is behind camera
+                fLabel.style.display = (vector.z > 1) ? 'none' : 'block';
+            }
+
+            // Update time for shader
+            time += 0.016 * waveSpeed;
+            Object.values(planes).forEach(plane => {
+                plane.material.uniforms.time.value = time;
+            });
+
+            // Update controls
+            controls.update();
+
+            // Auto-rotation for Phi & Theta (Subtle)
+            if (!isPaused) {
+                sectionPhi += 0.2;
+                orbitTheta += 0.1;
+                if (sectionPhi >= 360) sectionPhi -= 360;
+                if (orbitTheta >= 360) orbitTheta -= 360;
+                window.updateQuantumPos();
+            }
+
+            // Render scene
+            renderer.render(scene, camera);
+
+            // FPS Counter
+            frameCount++;
+            const currentTime = performance.now();
+            if (currentTime >= lastTime + 1000) {
+                document.getElementById('fps-value').textContent = frameCount;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+        }
+
+        // ============================================
+        // 📱 RESPONSIVE HANDLING
+        // ============================================
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ============================================
+        // 🚀 INITIALIZATION
+        // ============================================
+
+        // Hide loading screen after 1 second
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+            console.log('✅ Portal initialized successfully');
+            animate();
+        }, 1000);
+
+        // ============================================
+        // ⌨️ CONSOLE LOGIC
+        // ============================================
+
+        const consoleOverlay = document.getElementById('console-overlay');
+        const consoleInput = document.getElementById('console-input');
+        const consoleLog = document.getElementById('console-log');
+
+        window.toggleTerminal = toggleTerminal;
+
+        // Command Execution
+        consoleInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = consoleInput.value.trim();
+                if (cmd) {
+                    processCommand(cmd);
+                    consoleInput.value = '';
+                }
+            }
+        });
+
+        // Radius (R)
+        const pxSlider = document.getElementById('point-x');
+        if (pxSlider) {
+            pxSlider.addEventListener('input', (e) => {
+                orbitRadius = parseFloat(e.target.value);
+                window.updateQuantumPos();
+            });
+        }
+
+        // Minor Radius (r)
+        const minorRSlider = document.getElementById('minor-r');
+        if (minorRSlider) {
+            minorRSlider.addEventListener('input', (e) => {
+                minorRadius = parseFloat(e.target.value);
+                window.updateQuantumPos();
+            });
+        }
+
+        // Revolution (Theta)
+        const thetaSlider = document.getElementById('rev-theta');
+        if (thetaSlider) {
+            thetaSlider.addEventListener('input', (e) => {
+                orbitTheta = parseFloat(e.target.value);
+                window.updateQuantumPos();
+            });
+        }
+
+        // Section Phi
+        const phiSlider = document.getElementById('sec-phi');
+        if (phiSlider) {
+            phiSlider.addEventListener('input', (e) => {
+                sectionPhi = parseFloat(e.target.value);
+                window.updateQuantumPos();
+            });
+        }
+
+        // Auto-rotate Checkbox
+        const rotateCheck = document.getElementById('auto-rotate');
+        if (rotateCheck) {
+            rotateCheck.addEventListener('change', (e) => {
+                isPaused = !e.target.checked;
+                log(`Auto-rotation ${e.target.checked ? 'ENABLED' : 'DISABLED'}`, 'log-info');
+            });
+        }
+
+        // Re-declaring for clarity but already defined above
+        // window.updateQuantumPos ...
+
+        function processCommand(cmdStr) {
+            log(cmdStr, 'log-info');
+            const parts = cmdStr.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            try {
+                switch (cmd) {
+                    case 'help':
+                        log('AVAILABLE COMMANDS:', 'log-info');
+                        log('  R [val]           - Set major radius', 'log-info');
+                        log('  r [val]           - Set minor radius', 'log-info');
+                        log('  theta [deg]       - Set revolution angle', 'log-info');
+                        log('  phi [deg]         - Set section angle', 'log-info');
+                        log('  clear             - Clear console', 'log-info');
+                        break;
+
+                    case 'freq':
+                        if (args[0]) window.freq(parseFloat(args[0]));
+                        break;
+
+                    case 'amp':
+                        if (args[0]) window.amp(parseFloat(args[0]));
+                        break;
+
+                    case 'speed':
+                        if (args[0]) window.speed(parseFloat(args[0]));
+                        break;
+
+                    case 'opacity':
+                        if (args[0]) window.opacity(parseFloat(args[0]));
+                        break;
+
+                    case 'color':
+                        if (args[0]) window.color(args[0]);
+                        break;
+
+                    case 'r_major':
+                    case 'R':
+                    case 'px':
+                        if (args[0]) {
+                            orbitRadius = parseFloat(args[0]);
+                            window.updateQuantumPos();
+                        }
+                        break;
+
+                    case 'r_minor':
+                    case 'r':
+                        if (args[0]) {
+                            minorRadius = parseFloat(args[0]);
+                            window.updateQuantumPos();
+                        }
+                        break;
+
+                    case 'rev':
+                    case 'theta':
+                        if (args[0]) {
+                            orbitTheta = parseFloat(args[0]);
+                            window.updateQuantumPos();
+                        }
+                        break;
+
+                    case 'phi':
+                    case 'sec':
+                        if (args[0]) {
+                            sectionPhi = parseFloat(args[0]);
+                            window.updateQuantumPos();
+                        }
+                        break;
+
+                    case 'pause':
+                        if (!isPaused) window.togglePause();
+                        break;
+
+                    case 'play':
+                        if (isPaused) window.togglePause();
+                        break;
+
+                    case 'toggle':
+                        window.toggle(args[0]);
+                        break;
+
+                    case 'clear':
+                        consoleLog.innerHTML = '';
+                        break;
+
+                    default:
+                        log(`Unknown command: ${cmd}. Type 'help' for options.`, 'log-error');
+                }
+            } catch (e) {
+                log(`Error executing command: ${e.message}`, 'log-error');
+            }
+        }
+
+        // ============================================
+        // 🌐 GLOBAL EXPORTS (For Browser Console)
+        // ============================================
+
+        window.freq = (val) => {
+            Object.values(planes).forEach(p => p.material.uniforms.frequency.value = val);
+            const el = document.getElementById('freq-value');
+            if (el) el.textContent = val.toFixed(1);
+            log(`Frequency set to ${val}`, 'log-success');
+        };
+
+        window.amp = (val) => {
+            Object.values(planes).forEach(p => p.material.uniforms.amplitude.value = val);
+            const el = document.getElementById('amp-value');
+            if (el) el.textContent = val.toFixed(1);
+            log(`Amplitude set to ${val}`, 'log-success');
+        };
+
+        window.speed = (val) => {
+            waveSpeed = val;
+            const el = document.getElementById('speed-value');
+            if (el) el.textContent = val.toFixed(1);
+            log(`Speed set to ${val}`, 'log-success');
+        };
+
+        window.opacity = (val) => {
+            Object.values(planes).forEach(p => p.material.uniforms.opacity.value = val);
+            const el = document.getElementById('opacity-value');
+            if (el) el.textContent = val.toFixed(2);
+            log(`Opacity set to ${val}`, 'log-success');
+        };
+
+        window.color = (hex) => {
+            const col = new THREE.Color(hex);
+            Object.values(planes).forEach(p => p.material.uniforms.color.value = col);
+            log(`Global color set to ${hex}`, 'log-success');
+        };
+
+        window.toggle = (target = 'all') => {
+            if (target === 'all' || !target) {
+                const v = !planes.xy.visible;
+                Object.values(planes).forEach(p => p.visible = v);
+                log(`All planes ${v ? 'shown' : 'hidden'}`, 'log-success');
+            } else if (planes[target]) {
+                planes[target].visible = !planes[target].visible;
+                log(`Plane ${target} visibility: ${planes[target].visible}`, 'log-success');
+            }
+        };
+
+        // Redshift legacy commands for compatibility
+        window.pointX = (val) => {
+            orbitRadius = val;
+            window.updateQuantumPos();
+        };
+
+    </script>
+</body>
+
+</html>
