@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Breathing Universe - Interactive Portal</title>
+    <meta name="description"
+        content="Interactive visualization of Arnon Daniel Katz's Breathing Universe theory - Exploring the fundamental architecture of reality through sacred geometry">
+
+    <!-- Neo-Euclid Theme: LaTeX-style fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           NEO-EUCLID DUAL THEME SYSTEM
+           ═══════════════════════════════════════════════════════════ */
+
+        :root {
+            /* Light Theme - Manuscript Mode (Default) */
+            --paper-bg: #f5f3ef;
+            --panel-bg: rgba(245, 243, 239, 0.94);
+            --panel-border: rgba(90, 82, 74, 0.15);
+            --ink-primary: #2a2520;
+            --ink-secondary: #6a625a;
+            --ink-muted: #9a928a;
+            --accent-theta: #1a7a9e;
+            --accent-phi: #a83068;
+            --accent-warp: #b8860b;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --glow-theta: rgba(26, 122, 158, 0.15);
+            --glow-phi: rgba(168, 48, 104, 0.15);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme - Cosmic Mode */
+            --paper-bg: #0d1117;
+            --panel-bg: rgba(13, 17, 23, 0.92);
+            --panel-border: rgba(200, 200, 200, 0.08);
+            --ink-primary: #e8e4dc;
+            --ink-secondary: #a8a098;
+            --ink-muted: #686058;
+            --accent-theta: #5fb8d8;
+            --accent-phi: #e05090;
+            --accent-warp: #e8b84a;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --glow-theta: rgba(95, 184, 216, 0.2);
+            --glow-phi: rgba(224, 80, 144, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'EB Garamond', 'Cormorant Garamond', 'Times New Roman', serif;
+            background: var(--paper-bg);
+            color: var(--ink-primary);
+            overflow: hidden;
+            transition: background 0.5s ease, color 0.5s ease;
+            /* Subtle paper texture overlay */
+            background-image:
+                radial-gradient(ellipse at 20% 30%, var(--glow-theta) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, var(--glow-phi) 0%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* UI Controls Panel */
+        #controls-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 25px;
+            min-width: 260px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            z-index: 100;
+            transition: background 0.5s, border-color 0.5s, box-shadow 0.5s;
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #controls-panel.minimized {
+            transform: translateX(calc(100% + 20px));
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #controls-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+            z-index: 500;
+        }
+
+        /* Left Panel Wrapper */
+        #temporal-wrapper {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+            z-index: 500;
+        }
+
+        #temporal-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 25px;
+            min-width: 260px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            z-index: 100;
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #temporal-panel.minimized {
+            transform: translateX(calc(-100% - 20px));
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .ui-toggle-left {
+            background: rgba(217, 79, 140, 0.05);
+            border: 1px solid rgba(217, 79, 140, 0.3);
+            color: var(--accent-phi);
+            padding: 10px 18px;
+            border-radius: 4px;
+            font-family: 'EB Garamond', serif;
+            font-size: 12px;
+            font-style: italic;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .ui-toggle-left:hover {
+            background: rgba(217, 79, 140, 0.12);
+            border-color: var(--accent-phi);
+        }
+
+        #temporal-panel h2 {
+            font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+            font-size: 14px;
+            font-weight: 600;
+            font-style: italic;
+            color: var(--accent-phi);
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            border-left: 2px solid var(--accent-phi);
+            padding-left: 12px;
+        }
+
+        .ui-toggle-main {
+            background: rgba(79, 179, 217, 0.05);
+            border: 1px solid rgba(79, 179, 217, 0.3);
+            color: var(--accent-theta);
+            padding: 10px 18px;
+            border-radius: 4px;
+            font-family: 'EB Garamond', serif;
+            font-size: 12px;
+            font-style: italic;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .ui-toggle-main:hover {
+            background: rgba(79, 179, 217, 0.12);
+            border-color: var(--accent-theta);
+        }
+
+        #controls-panel h2 {
+            font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+            font-size: 14px;
+            font-weight: 600;
+            font-style: italic;
+            color: var(--accent-theta);
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            border-left: 2px solid var(--accent-theta);
+            padding-left: 12px;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        .ctrl-desc {
+            font-size: 9px;
+            color: #5a6a7a;
+            margin-top: 3px;
+            font-style: italic;
+        }
+
+        .control-group label {
+            display: block;
+            font-family: 'EB Garamond', serif;
+            font-size: 13px;
+            color: var(--ink-secondary);
+            margin-bottom: 6px;
+            font-style: italic;
+        }
+
+        .ctrl-desc {
+            font-family: 'EB Garamond', serif;
+            font-size: 11px;
+            color: #6a7a8a;
+            margin-top: 4px;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #00d4ff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: #00d4ff;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+        }
+
+        .value-display {
+            font-size: 11px;
+            color: #00d4ff;
+            font-weight: 600;
+            float: right;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px 12px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 6px;
+            color: #00d4ff;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+        }
+
+        .toggle-btn.active {
+            background: rgba(0, 212, 255, 0.3);
+            border-color: #00d4ff;
+            box-shadow: 0 0 16px rgba(0, 212, 255, 0.5);
+        }
+
+        /* Knob System */
+        .knobs-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .knob-control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .knob-container {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            cursor: ns-resize;
+            user-select: none;
+        }
+
+        .knob-outer {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 10, 20, 0.6);
+            border: 2px solid rgba(255, 0, 170, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 0 5px rgba(255, 0, 170, 0.1);
+            transition: border-color 0.3s;
+        }
+
+        .knob-container:hover .knob-outer {
+            border-color: rgba(255, 0, 170, 0.5);
+        }
+
+        .knob-indicator {
+            width: 2px;
+            height: 16px;
+            background: #ff00aa;
+            border-radius: 2px;
+            position: absolute;
+            top: 6px;
+            left: 24px;
+            transform-origin: 1px 19px;
+            box-shadow: 0 0 10px #ff00aa;
+            pointer-events: none;
+        }
+
+        .knob-outer.active {
+            border-color: #ff00aa;
+            box-shadow: 0 0 20px rgba(255, 0, 170, 0.4);
+        }
+
+        .knob-label {
+            font-size: 8px;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .knob-value {
+            font-size: 10px;
+            color: #ff00aa;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 800;
+        }
+
+        /* 3D Sphere Control */
+        #sphere-control-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        #sphere-canvas {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 0, 170, 0.3);
+            cursor: grab;
+            background: rgba(0, 5, 15, 0.8);
+        }
+
+        #sphere-canvas:active {
+            cursor: grabbing;
+            border-color: #ff00aa;
+            box-shadow: 0 0 20px rgba(255, 0, 170, 0.4);
+        }
+
+        .sphere-values {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9px;
+        }
+
+        .sphere-val {
+            text-align: center;
+        }
+
+        .sphere-val .label {
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sphere-val .value {
+            font-weight: 800;
+            font-size: 11px;
+        }
+
+        .sphere-val.theta .value {
+            color: #00d4ff;
+        }
+
+        .sphere-val.phi .value {
+            color: #ff00aa;
+        }
+
+        .sphere-val.warp .value {
+            color: #ffd700;
+        }
+
+        .sphere-hint {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.3);
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        #terminal-toggle-btn,
+        #play-pause-btn {
+            background: transparent;
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            color: #00d4ff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-left: 8px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        #terminal-toggle-btn {
+            float: right;
+            margin-top: -4px;
+        }
+
+        #play-pause-btn {
+            width: 100%;
+            margin: 0 0 20px 0;
+            display: block;
+            border-color: #ff00aa;
+            color: #ff00aa;
+        }
+
+        #terminal-toggle-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+        }
+
+        #play-pause-btn:hover {
+            background: rgba(255, 0, 170, 0.1);
+            box-shadow: 0 0 10px rgba(255, 0, 170, 0.3);
+        }
+
+        /* Info Panel */
+        #info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 12px 20px;
+            max-width: 380px;
+            text-align: center;
+            z-index: 50;
+            transition: background 0.5s, border-color 0.5s;
+        }
+
+        #info-panel h1 {
+            font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+            font-size: 22px;
+            font-weight: 600;
+            font-style: italic;
+            color: var(--accent-warp);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        #info-panel p {
+            font-family: 'EB Garamond', serif;
+            font-size: 14px;
+            color: var(--ink-secondary);
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        #fps-counter {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(26, 35, 50, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #00d4ff;
+            font-weight: 600;
+            z-index: 100;
+        }
+
+        /* Custom Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 10px 15px;
+            background: rgba(0, 212, 255, 0.03);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-group:hover {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            background: rgba(0, 10, 20, 0.5);
+        }
+
+        .checkbox-group input[type="checkbox"]:checked {
+            background: #00d4ff;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .checkbox-group input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0a0e14;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .checkbox-group label {
+            font-size: 11px;
+            color: #a0aec0;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0e14;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 212, 255, 0.2);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: #00d4ff;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        /* CONSOLE OVERLAY */
+        #console-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background: rgba(10, 14, 20, 0.95);
+            border-top: 2px solid #00d4ff;
+            display: none;
+            flex-direction: column;
+            z-index: 2000;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        #console-overlay.visible {
+            display: flex;
+        }
+
+        #console-log {
+            flex: 1;
+            overflow-y: auto;
+            color: #00d4ff;
+            font-size: 13px;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+
+        #console-input-line {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid rgba(0, 212, 255, 0.3);
+            padding-top: 10px;
+        }
+
+        #console-prompt {
+            color: #00d4ff;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        #console-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+        }
+
+        .log-success {
+            color: #00ffaa;
+        }
+
+        .log-error {
+            color: #ff4444;
+        }
+
+        .log-info {
+            color: #88ccff;
+        }
+
+        #quantum-coords {
+            position: fixed;
+            top: 25px;
+            right: 160px;
+            font-family: 'EB Garamond', 'Times New Roman', serif;
+            font-size: 12px;
+            font-style: italic;
+            color: rgba(232, 220, 200, 0.5);
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            text-align: right;
+            z-index: 1000;
+        }
+
+        #floating-label {
+            position: fixed;
+            pointer-events: none;
+            color: var(--ink-secondary);
+            font-family: 'EB Garamond', serif;
+            font-size: 11px;
+            font-style: italic;
+            white-space: nowrap;
+            z-index: 900;
+            text-shadow: 0 0 4px rgba(248, 245, 240, 0.9);
+            letter-spacing: 0.5px;
+        }
+
+        #floating-label-phi {
+            position: fixed;
+            pointer-events: none;
+            color: var(--accent-phi);
+            font-family: 'EB Garamond', serif;
+            font-size: 11px;
+            font-style: italic;
+            white-space: nowrap;
+            z-index: 900;
+            text-shadow: 0 0 4px rgba(248, 245, 240, 0.9);
+            letter-spacing: 0.5px;
+        }
+
+        /* Theme Toggle Button */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--ink-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px var(--shadow-color);
+        }
+
+        #theme-toggle:hover {
+            background: var(--accent-warp);
+            color: var(--paper-bg);
+            border-color: var(--accent-warp);
+        }
+
+        [data-theme="dark"] #theme-toggle {
+            content: '☾';
+        }
+
+        /* Utility color classes */
+        .theta-color {
+            color: var(--accent-theta);
+        }
+
+        .phi-color {
+            color: var(--accent-phi);
+        }
+
+        .warp-color {
+            color: var(--accent-warp);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <div class="loading-text">INITIALIZING QUANTUM SPACE...</div>
+    </div>
+
+    <!-- Console Overlay -->
+    <div id="console-overlay">
+        <div id="console-log">
+            <div class="log-entry log-info">> SYSTEM READY. PRESS '~' TO TOGGLE CONSOLE.</div>
+            <div class="log-entry log-info">> TYPE 'help' FOR COMMANDS.</div>
+        </div>
+        <div id="console-input-line">
+            <span id="console-prompt">NONI_OS></span>
+            <input type="text" id="console-input" placeholder="Enter command..." autocomplete="off">
+        </div>
+    </div>
+
+    <!-- Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Quantum Coordinates -->
+    <div id="quantum-coords">
+        P_m : [ <span id="coord-x">0.0</span>, <span id="coord-y">0.0</span>, <span id="coord-z">0.0</span> ] |
+        <span class="theta-color">θ: <span id="coord-theta">0</span>°</span>
+        <span class="phi-color">φ: <span id="coord-phi">0</span>°</span>
+    </div>
+
+    <!-- Floating Labels -->
+    <div id="floating-label">P_m : 0.00</div>
+    <div id="floating-label-phi" style="color: #ff00aa;">P_φ : 0.00</div>
+
+    <!-- FPS Counter -->
+    <div id="fps-counter">FPS: <span id="fps-value">60</span></div>
+
+    <!-- Theme Toggle -->
+    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">☀</button>
+
+    <!-- Info Panel -->
+    <div id="info-panel">
+        <h1>🌌 The Breathing Universe</h1>
+        <p>Interactive visualization of the fundamental architecture of reality. Use mouse to orbit, scroll to zoom.</p>
+    </div>
+
+    <!-- Temporal Controls (Left) -->
+    <div id="temporal-wrapper">
+        <button class="ui-toggle-left"
+            onclick="document.getElementById('temporal-panel').classList.toggle('minimized')">Toggle Temporal</button>
+        <div id="temporal-panel">
+            <h2>⏳ TEMPORAL_DRIVE</h2>
+
+            <button id="play-pause-btn" onclick="togglePause()">⏸ PAUSE</button>
+
+            <div id="sphere-control-container">
+                <canvas id="sphere-canvas" width="150" height="150"></canvas>
+                <div class="sphere-values">
+                    <div class="sphere-val theta">
+                        <div class="label">θ REVOLUTION</div>
+                        <div class="value" id="sphere-theta-val">0.10</div>
+                        <div class="desc" style="font-size: 8px; color: #6a7a8a; margin-top: 2px;">Orbit around major
+                            axis</div>
+                    </div>
+                    <div class="sphere-val phi">
+                        <div class="label">φ SECTION</div>
+                        <div class="value" id="sphere-phi-val">0.20</div>
+                        <div class="desc" style="font-size: 8px; color: #6a7a8a; margin-top: 2px;">Spin in torus tube
+                        </div>
+                    </div>
+                </div>
+                <div class="sphere-hint">Drag circles to control speeds</div>
+            </div>
+
+            <div class="control-group" style="margin-top: 15px;">
+                <label style="color: #ffd700; font-size: 11px;">⚡ WARP <span class="value-display" id="sphere-warp-val"
+                        style="color: #ffd700;">1.0</span>x</label>
+                <input type="range" id="warp-slider" min="0.1" max="10" step="0.1" value="1"
+                    style="accent-color: #ffd700;">
+                <div style="font-size: 8px; color: #6a7a8a; text-align: center; margin-top: 3px;">Speed up or slow down
+                    time</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Geometry Controls (Right) -->
+    <div id="controls-wrapper">
+        <button class="ui-toggle-main"
+            onclick="document.getElementById('controls-panel').classList.toggle('minimized')">Toggle Geometry</button>
+        <div id="controls-panel">
+            <button id="terminal-toggle-btn" onclick="toggleTerminal()">_TERMINAL</button>
+            <h2>⚙️ GEOMETRY_CONFIG</h2>
+
+            <div class="control-group">
+                <label>O:M Radius (Major R) <span class="value-display" id="px-value">25.0</span></label>
+                <input type="range" id="point-x" min="0" max="50" step="0.5" value="25">
+                <div class="ctrl-desc">Distance from center to torus tube</div>
+            </div>
+
+            <div class="control-group">
+                <label>Minor Radius (r) <span class="value-display" id="minor-r-value">10.0</span></label>
+                <input type="range" id="minor-r" min="0" max="30" step="0.5" value="10">
+                <div class="ctrl-desc">Thickness of the torus tube</div>
+            </div>
+
+            <div class="control-group">
+                <label>Theta (Manual) <span class="value-display" id="theta-value">0°</span></label>
+                <input type="range" id="rev-theta" min="0" max="360" step="1" value="0">
+                <div class="ctrl-desc">Manual angle around major axis</div>
+            </div>
+
+            <div class="control-group">
+                <label>Phi (Manual) <span class="value-display" id="phi-value">0°</span></label>
+                <input type="range" id="sec-phi" min="0" max="360" step="1" value="0">
+                <div class="ctrl-desc">Manual angle in tube section</div>
+            </div>
+
+            <div class="control-group">
+                <label>Trail Length <span class="value-display" id="trail-value">1000</span></label>
+                <input type="range" id="trail-length" min="10" max="2000" step="10" value="1000">
+                <div class="ctrl-desc">Number of trail points</div>
+            </div>
+
+            <div class="control-group">
+                <label style="font-size: 10px; margin-bottom: 5px;">Trail Colors</label>
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1; text-align: center;">
+                        <input type="color" id="trail-color1" value="#ff00aa"
+                            style="width: 100%; height: 25px; border: none; border-radius: 4px; cursor: pointer;">
+                        <div class="ctrl-desc">Start</div>
+                    </div>
+                    <div style="flex: 1; text-align: center;">
+                        <input type="color" id="trail-color2" value="#00ffff"
+                            style="width: 100%; height: 25px; border: none; border-radius: 4px; cursor: pointer;">
+                        <div class="ctrl-desc">End</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // ============================================
+        // 🌌 THE BREATHING UNIVERSE - PHASE 1
+        // Quantum Space with Orthogonal Planes
+        // ============================================
+
+        console.log('🚀 Initializing The Breathing Universe Portal...');
+
+        // ============================================
+        // THEME TOGGLE SYSTEM
+        // ============================================
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : '');
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+
+            // Update toggle button icon
+            const btn = document.getElementById('theme-toggle');
+            btn.textContent = isDarkTheme ? '☾' : '☀';
+
+            // Update Three.js scene background and fog
+            if (scene) {
+                const bgColor = new THREE.Color(isDarkTheme ? 0x0d1117 : 0xf5f3ef);
+                scene.background = bgColor;
+                scene.fog.color = bgColor;
+            }
+        }
+
+        // Initialize theme on load
+        if (isDarkTheme) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-toggle').textContent = '☾';
+        }
+        window.toggleTheme = toggleTheme;
+
+        // Scene Setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(isDarkTheme ? 0x0d1117 : 0xf5f3ef);
+        scene.fog = new THREE.Fog(isDarkTheme ? 0x0d1117 : 0xf5f3ef, 50, 200);
+
+        // Camera Setup
+        const camera = new THREE.PerspectiveCamera(
+            60,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(80, 60, 80);
+        camera.lookAt(0, 0, 0);
+
+        // Renderer Setup
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Orbit Controls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.minDistance = 20;
+        controls.maxDistance = 200;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0x00d4ff, 0.6);
+        directionalLight.position.set(50, 50, 50);
+        scene.add(directionalLight);
+
+        // ============================================
+        // 🌊 QUANTUM WAVE SHADER
+        // ============================================
+
+        const quantumWaveShader = {
+            uniforms: {
+                time: { value: 0 },
+                frequency: { value: 2.0 },
+                amplitude: { value: 0.5 },
+                opacity: { value: 0.25 },
+                color: { value: new THREE.Color(0x00d4ff) }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                varying vec3 vPosition;
+                
+                void main() {
+                    vUv = uv;
+                    vPosition = position;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float time;
+                uniform float frequency;
+                uniform float amplitude;
+                uniform float opacity;
+                uniform vec3 color;
+                
+                varying vec2 vUv;
+                varying vec3 vPosition;
+                
+                void main() {
+                    // Quantum wave pattern
+                    float wave1 = sin(vPosition.x * frequency + time) * amplitude;
+                    float wave2 = sin(vPosition.y * frequency + time * 1.3) * amplitude;
+                    float wave3 = sin(vPosition.z * frequency + time * 0.7) * amplitude;
+                    
+                    float combinedWave = (wave1 + wave2 + wave3) / 3.0;
+                    
+                    // Pure Wave intensity (No internal grid)
+                    float finalIntensity = 0.6 + combinedWave * 0.4;
+                    
+                    vec3 finalColor = color * finalIntensity;
+                    float finalOpacity = opacity * (0.8 + combinedWave * 0.2);
+                    
+                    gl_FragColor = vec4(finalColor, finalOpacity);
+                }
+            `
+        };
+
+        const revPathShader = {
+            uniforms: {
+                color1: { value: new THREE.Color(0x00d4ff) },
+                color2: { value: new THREE.Color(0x0055ff) },
+                opacity: { value: 0.3 }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 color1;
+                uniform vec3 color2;
+                uniform float opacity;
+                varying vec2 vUv;
+                void main() {
+                    // Gradient along the length of the torus (vUv.x)
+                    vec3 finalColor = mix(color1, color2, vUv.x);
+                    gl_FragColor = vec4(finalColor, opacity);
+                }
+            `
+        };
+
+        const secPathShader = {
+            uniforms: {
+                color1: { value: new THREE.Color(0xff00aa) },
+                color2: { value: new THREE.Color(0x8800ff) },
+                opacity: { value: 0.3 }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 color1;
+                uniform vec3 color2;
+                uniform float opacity;
+                varying vec2 vUv;
+                void main() {
+                    vec3 finalColor = mix(color1, color2, vUv.x);
+                    gl_FragColor = vec4(finalColor, opacity);
+                }
+            `
+        };
+
+        const trailShader = {
+            uniforms: {
+                color1: { value: new THREE.Color(0xff00aa) },
+                color2: { value: new THREE.Color(0x00ffff) }
+            },
+            vertexShader: `
+                attribute float vertexAlpha;
+                varying float vAlpha;
+                void main() {
+                    vAlpha = vertexAlpha;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 color1;
+                uniform vec3 color2;
+                varying float vAlpha;
+                void main() {
+                    vec3 gradientColor = mix(color1, color2, 1.0 - vAlpha);
+                    gl_FragColor = vec4(gradientColor, vAlpha * 0.7);
+                }
+            `
+        };
+
+        // ============================================
+        // 📐 ORTHOGONAL PLANES (100 units)
+        // ============================================
+
+        const planeSize = 100;
+        const planes = {};
+
+        function createQuantumPlane(name, rotation, position) {
+            const geometry = new THREE.PlaneGeometry(planeSize, planeSize, 50, 50);
+            const material = new THREE.ShaderMaterial({
+                uniforms: THREE.UniformsUtils.clone(quantumWaveShader.uniforms),
+                vertexShader: quantumWaveShader.vertexShader,
+                fragmentShader: quantumWaveShader.fragmentShader,
+                transparent: true,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+
+            const plane = new THREE.Mesh(geometry, material);
+            plane.rotation.set(rotation.x, rotation.y, rotation.z);
+            plane.position.set(position.x, position.y, position.z);
+
+            scene.add(plane);
+            return plane;
+        }
+
+        // XY Plane (Horizontal)
+        planes.xy = createQuantumPlane('xy',
+            { x: 0, y: 0, z: 0 },
+            { x: 0, y: 0, z: 0 }
+        );
+
+        // XZ Plane (Vertical - Depth)
+        planes.xz = createQuantumPlane('xz',
+            { x: Math.PI / 2, y: 0, z: 0 },
+            { x: 0, y: 0, z: 0 }
+        );
+
+        // YZ Plane (Vertical - Lateral)
+        planes.yz = createQuantumPlane('yz',
+            { x: 0, y: Math.PI / 2, z: 0 },
+            { x: 0, y: 0, z: 0 }
+        );
+
+        // Set different colors for each plane
+        planes.xy.material.uniforms.color.value = new THREE.Color(0x00d4ff); // Cyan
+        planes.xz.material.uniforms.color.value = new THREE.Color(0x0088cc); // Deep Cyan
+        planes.yz.material.uniforms.color.value = new THREE.Color(0x00aaee); // Light Cyan
+
+        // Hide by default
+        Object.values(planes).forEach(p => p.visible = false);
+
+        console.log('✅ Quantum planes initialized (Hidden)');
+
+        // ============================================
+        // 🎯 AXIS INDICATORS
+        // ============================================
+
+        // Central Singularity (Origin)
+        const originGeo = new THREE.SphereGeometry(0.5, 16, 16);
+        const originMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.5 });
+        const originPoint = new THREE.Mesh(originGeo, originMat);
+        scene.add(originPoint);
+
+        // --- FLOOR GRID ---
+        const gridHelper = new THREE.GridHelper(200, 20, 0x00d4ff, 0x112233);
+        // Default GridHelper is on XZ plane (Floor)
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.15;
+        scene.add(gridHelper);
+
+        // --- UTILS ---
+        function log(msg, type = '') {
+            const div = document.createElement('div');
+            div.className = 'log-entry ' + type;
+            div.textContent = '> ' + msg;
+            const logEl = document.getElementById('console-log');
+            if (logEl) {
+                logEl.appendChild(div);
+                logEl.scrollTop = logEl.scrollHeight;
+            }
+        }
+
+        function toggleTerminal() {
+            const consoleOverlay = document.getElementById('console-overlay');
+            const consoleInput = document.getElementById('console-input');
+            if (consoleOverlay) {
+                consoleOverlay.classList.toggle('visible');
+                if (consoleOverlay.classList.contains('visible') && consoleInput) {
+                    consoleInput.focus();
+                }
+            }
+        }
+        window.toggleTerminal = toggleTerminal;
+
+        // Key Listener for Console
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '`' || e.key === '~') {
+                e.preventDefault();
+                toggleTerminal();
+            }
+        });
+
+        // --- QUANTUM POINT ---
+        const quantumPointGeo = new THREE.SphereGeometry(1.5, 32, 32);
+        const quantumPointMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const quantumPoint = new THREE.Mesh(quantumPointGeo, quantumPointMat);
+
+        // Add a glow/halo to the point
+        const glowGeo = new THREE.SphereGeometry(3.0, 32, 32);
+        const glowMat = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.3
+        });
+        const glow = new THREE.Mesh(glowGeo, glowMat);
+        quantumPoint.add(glow);
+
+        scene.add(quantumPoint);
+        window.quantumPoint = quantumPoint;
+
+        // --- REVOLUTION PATH (CIRCLE) ---
+        // Using a TorusGeometry with a custom gradient shader
+        let pathGeo = new THREE.TorusGeometry(25, 0.12, 16, 100);
+        const pathMat = new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.clone(revPathShader.uniforms),
+            vertexShader: revPathShader.vertexShader,
+            fragmentShader: revPathShader.fragmentShader,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        const revPath = new THREE.Mesh(pathGeo, pathMat);
+        revPath.rotation.x = Math.PI / 2;
+        scene.add(revPath);
+        window.revPath = revPath;
+
+        let orbitRadius = 25.0;
+        let orbitTheta = 0;
+        let minorRadius = 10.0;
+        let sectionPhi = 0;
+        let thetaRotateSpeed = 0.1;
+        let phiRotateSpeed = 0.2;
+        let temporalWarp = 1.0;
+        let isPaused = false;
+        let waveSpeed = 1.0;
+
+        window.thetaRotateSpeed = thetaRotateSpeed;
+        window.phiRotateSpeed = phiRotateSpeed;
+        window.temporalWarp = temporalWarp;
+
+        window.togglePause = () => {
+            isPaused = !isPaused;
+            const btn = document.getElementById('play-pause-btn');
+            if (btn) {
+                btn.innerHTML = isPaused ? '▶ PLAY' : '⏸ PAUSE';
+                btn.style.color = isPaused ? '#00ffaa' : '#ff00aa';
+                btn.style.borderColor = isPaused ? '#00ffaa' : '#ff00aa';
+            }
+            log(`System ${isPaused ? 'PAUSED' : 'RESUMED'}`, 'log-info');
+        };
+
+        // --- SECTION PATH (VERTICAL CIRCLE) ---
+        // Using the same shader logic as the main path but with magenta/purple
+        const secPathGeo = new THREE.TorusGeometry(10, 0.05, 12, 100);
+        const secPathMat = new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.clone(secPathShader.uniforms),
+            vertexShader: secPathShader.vertexShader,
+            fragmentShader: secPathShader.fragmentShader,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        const secPath = new THREE.Mesh(secPathGeo, secPathMat);
+        scene.add(secPath);
+
+        // --- TRAIL FOR TORUS POINT ---
+        let trailMaxPoints = 2000; // Buffer size
+        let currentTrailLength = 1000;
+        const trailPositions = new Float32Array(trailMaxPoints * 3);
+        const trailAlphas = new Float32Array(trailMaxPoints);
+        for (let i = 0; i < trailMaxPoints; i++) trailAlphas[i] = 1.0 - (i / currentTrailLength);
+
+        const trailGeo = new THREE.BufferGeometry();
+        trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+        trailGeo.setAttribute('vertexAlpha', new THREE.BufferAttribute(trailAlphas, 1));
+
+        const trailMat = new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.clone(trailShader.uniforms),
+            vertexShader: trailShader.vertexShader,
+            fragmentShader: trailShader.fragmentShader,
+            transparent: true,
+            depthWrite: false
+        });
+        const phiTrail = new THREE.Line(trailGeo, trailMat);
+        scene.add(phiTrail);
+
+        // --- TORUS SURFACE POINT ---
+        const torusPoint = new THREE.Mesh(
+            new THREE.SphereGeometry(1.0, 32, 32),
+            new THREE.MeshBasicMaterial({ color: 0xff00aa })
+        );
+        scene.add(torusPoint);
+        window.torusPoint = torusPoint;
+
+        // --- AXIS O:M (RADIAL LINE) ---
+        const axisLineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0)]);
+        const axisLineMat = new THREE.LineBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.3 });
+        const axisLine = new THREE.Line(axisLineGeo, axisLineMat);
+        scene.add(axisLine);
+        window.axisLine = axisLine;
+
+        window.updateQuantumPos = () => {
+            const radTheta = orbitTheta * (Math.PI / 180);
+            const radPhi = sectionPhi * (Math.PI / 180);
+
+            // Center of the section (Pm)
+            quantumPoint.position.x = orbitRadius * Math.cos(radTheta);
+            quantumPoint.position.y = 0;
+            quantumPoint.position.z = orbitRadius * Math.sin(radTheta);
+
+            // Point on the torus surface
+            // x = (R + r*cos(phi)) * cos(theta)
+            // y = r * sin(phi)
+            // z = (R + r*cos(phi)) * sin(theta)
+            const torusX = (orbitRadius + minorRadius * Math.cos(radPhi)) * Math.cos(radTheta);
+            const torusY = minorRadius * Math.sin(radPhi);
+            const torusZ = (orbitRadius + minorRadius * Math.cos(radPhi)) * Math.sin(radTheta);
+            torusPoint.position.set(torusX, torusY, torusZ);
+
+            // Update Section Circle Position & Orientation
+            secPath.position.copy(quantumPoint.position);
+
+            // Perpendicular to O:M: The normal of the circle plane should be the radial vector
+            const radialVec = new THREE.Vector3(Math.cos(radTheta), 0, Math.sin(radTheta));
+            const tangentVec = new THREE.Vector3(-Math.sin(radTheta), 0, Math.cos(radTheta));
+
+            // Perpendicular to PATH: The normal along the movement tangent
+            secPath.lookAt(quantumPoint.position.clone().add(tangentVec));
+
+            // Update Radial Axis Line
+            axisLine.geometry.dispose();
+            axisLine.geometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, 0, 0),
+                new THREE.Vector3(quantumPoint.position.x, 0, quantumPoint.position.z)
+            ]);
+
+            // Update UI
+            if (document.getElementById('px-value')) document.getElementById('px-value').textContent = orbitRadius.toFixed(1);
+            if (document.getElementById('minor-r-value')) document.getElementById('minor-r-value').textContent = minorRadius.toFixed(1);
+            if (document.getElementById('theta-value')) document.getElementById('theta-value').textContent = Math.round(orbitTheta) + '°';
+            if (document.getElementById('phi-value')) document.getElementById('phi-value').textContent = Math.round(sectionPhi) + '°';
+
+            // Update Revolution Path
+            revPath.geometry.dispose();
+            revPath.geometry = new THREE.TorusGeometry(Math.max(0.1, orbitRadius), 0.08, 12, 100);
+
+            // Update Section Path Geometry
+            secPath.geometry.dispose();
+            secPath.geometry = new THREE.TorusGeometry(Math.max(0.1, minorRadius), 0.05, 12, 100);
+
+            // Update Dynamic Trail
+            const positions = phiTrail.geometry.attributes.position.array;
+            const alphas = phiTrail.geometry.attributes.vertexAlpha.array;
+
+            // Shift points
+            for (let i = trailMaxPoints - 1; i > 0; i--) {
+                positions[i * 3] = positions[(i - 1) * 3];
+                positions[i * 3 + 1] = positions[(i - 1) * 3 + 1];
+                positions[i * 3 + 2] = positions[(i - 1) * 3 + 2];
+            }
+            // Add new head
+            positions[0] = torusPoint.position.x;
+            positions[1] = torusPoint.position.y;
+            positions[2] = torusPoint.position.z;
+
+            // Dynamic Alphas based on current length
+            for (let i = 0; i < trailMaxPoints; i++) {
+                if (i < currentTrailLength) {
+                    alphas[i] = 1.0 - (i / currentTrailLength);
+                } else {
+                    alphas[i] = 0.0;
+                }
+            }
+
+            phiTrail.geometry.attributes.position.needsUpdate = true;
+            phiTrail.geometry.attributes.vertexAlpha.needsUpdate = true;
+
+            // log(`Pm & Torus point updated.`, 'log-info'); // Silenced for performance
+        };
+
+        // ============================================
+        // 🎮 UI CONTROLS
+        // ============================================
+
+        // Plane visibility toggles
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const planeName = btn.dataset.plane;
+                btn.classList.toggle('active');
+                planes[planeName].visible = btn.classList.contains('active');
+            });
+        });
+
+        // ============================================
+        // 🎯 2D DUAL CIRCLE HUD CONTROL
+        // ============================================
+
+        const sphereCanvas = document.getElementById('sphere-canvas');
+        const hudScene = new THREE.Scene();
+        const hudCamera = new THREE.OrthographicCamera(-2, 2, 2, -2, 0.1, 100);
+        hudCamera.position.z = 5;
+
+        const hudRenderer = new THREE.WebGLRenderer({
+            canvas: sphereCanvas,
+            alpha: true,
+            antialias: true
+        });
+        hudRenderer.setSize(150, 150);
+        hudRenderer.setClearColor(0x000000, 0);
+
+        // Theta Circle (Cyan - outer, horizontal revolution)
+        const thetaCircleGeo = new THREE.RingGeometry(1.4, 1.5, 64);
+        const thetaCircleMat = new THREE.MeshBasicMaterial({
+            color: 0x00d4ff,
+            side: THREE.DoubleSide,
+            opacity: 0.6,
+            transparent: true
+        });
+        const thetaCircle = new THREE.Mesh(thetaCircleGeo, thetaCircleMat);
+        hudScene.add(thetaCircle);
+
+        // Theta pointer (shows current theta angle)
+        const thetaPointerGeo = new THREE.CircleGeometry(0.12, 16);
+        const thetaPointerMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff });
+        const thetaPointer = new THREE.Mesh(thetaPointerGeo, thetaPointerMat);
+        thetaPointer.position.set(1.45, 0, 0);
+        hudScene.add(thetaPointer);
+
+        // Phi Circle (Magenta - inner, vertical section)
+        const phiCircleGeo = new THREE.RingGeometry(0.7, 0.8, 64);
+        const phiCircleMat = new THREE.MeshBasicMaterial({
+            color: 0xff00aa,
+            side: THREE.DoubleSide,
+            opacity: 0.6,
+            transparent: true
+        });
+        const phiCircle = new THREE.Mesh(phiCircleGeo, phiCircleMat);
+        hudScene.add(phiCircle);
+
+        // Phi pointer (shows current phi angle)
+        const phiPointerGeo = new THREE.CircleGeometry(0.1, 16);
+        const phiPointerMat = new THREE.MeshBasicMaterial({ color: 0xff00aa });
+        const phiPointer = new THREE.Mesh(phiPointerGeo, phiPointerMat);
+        phiPointer.position.set(0.75, 0, 0);
+        hudScene.add(phiPointer);
+
+        // Labels
+        function createHudLabel(text, color, x, y) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = color;
+            ctx.font = 'bold 24px Courier New';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 16, 16);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.scale.set(0.4, 0.4, 1);
+            sprite.position.set(x, y, 0);
+            return sprite;
+        }
+
+        // Labels with descriptions
+        hudScene.add(createHudLabel('θ', '#00d4ff', 1.8, 0));
+        hudScene.add(createHudLabel('φ', '#ff00aa', 0, -1.1));
+
+        // Add descriptive text labels
+        function createTextLabel(text, color, x, y, size = 16) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = color;
+            ctx.font = `bold ${size}px Courier New`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 64, 16);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.7 });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.scale.set(1.2, 0.3, 1);
+            sprite.position.set(x, y, 0);
+            return sprite;
+        }
+
+        hudScene.add(createTextLabel('θ', '#00d4ff', 0, 1.75, 14));
+        hudScene.add(createTextLabel('φ', '#ff00aa', 0, 0, 14));
+
+        // Pointers are interactive - drag to control speeds
+        // Map angle to speed: 0-360 degrees = 0-10 speed
+        let thetaAngle = (thetaRotateSpeed / 10) * 360;
+        let phiAngle = (phiRotateSpeed / 10) * 360;
+
+        function updateHudPointers() {
+            // Update pointer positions based on speed values
+            // Map speed 0-10 to 270° arc (from 225° to -45°, clockwise)
+            const startAngle = Math.PI * 1.25; // 225° (bottom-left)
+            const arcRange = Math.PI * 1.5; // 270° arc
+
+            const thetaRad = startAngle - (thetaRotateSpeed / 10) * arcRange;
+            const phiRad = startAngle - (phiRotateSpeed / 10) * arcRange;
+
+            thetaPointer.position.x = 1.45 * Math.cos(thetaRad);
+            thetaPointer.position.y = 1.45 * Math.sin(thetaRad);
+
+            phiPointer.position.x = 0.75 * Math.cos(phiRad);
+            phiPointer.position.y = 0.75 * Math.sin(phiRad);
+
+            // Variable stroke effect based on speed
+            // Scale circles slightly and adjust opacity (subtle effect)
+            const thetaScale = 1 + (thetaRotateSpeed / 10) * 0.08;
+            const phiScale = 1 + (phiRotateSpeed / 10) * 0.08;
+
+            thetaCircle.scale.set(thetaScale, thetaScale, 1);
+            phiCircle.scale.set(phiScale, phiScale, 1);
+
+            // Opacity increases with speed (0.4 to 0.9)
+            thetaCircleMat.opacity = 0.4 + (thetaRotateSpeed / 10) * 0.5;
+            phiCircleMat.opacity = 0.4 + (phiRotateSpeed / 10) * 0.5;
+
+            // Pointer size also grows slightly with speed
+            const thetaPtrScale = 1 + (thetaRotateSpeed / 10) * 0.3;
+            const phiPtrScale = 1 + (phiRotateSpeed / 10) * 0.3;
+            thetaPointer.scale.set(thetaPtrScale, thetaPtrScale, 1);
+            phiPointer.scale.set(phiPtrScale, phiPtrScale, 1);
+        }
+
+        // Interactive pointer control
+        let draggingPointer = null; // 'theta', 'phi', or null
+        let canvasRect = null;
+
+        const updateSphereUI = () => {
+            document.getElementById('sphere-theta-val').textContent = thetaRotateSpeed.toFixed(2);
+            document.getElementById('sphere-phi-val').textContent = phiRotateSpeed.toFixed(2);
+            document.getElementById('sphere-warp-val').textContent = temporalWarp.toFixed(1);
+            updateHudPointers();
+        };
+
+        updateSphereUI();
+
+        function getCanvasPos(e) {
+            if (!canvasRect) canvasRect = sphereCanvas.getBoundingClientRect();
+            const x = e.clientX - canvasRect.left - canvasRect.width / 2;
+            const y = -(e.clientY - canvasRect.top - canvasRect.height / 2);
+            return { x, y };
+        }
+
+        function getAngleFromPos(x, y) {
+            return Math.atan2(y, x);
+        }
+
+        function angleToSpeed(angle) {
+            // Map angle from 270° arc to speed 0-10
+            // Arc goes from 225° (bottom-left) to -45° (bottom-right), clockwise
+            const startAngle = Math.PI * 1.25; // 225°
+            const arcRange = Math.PI * 1.5; // 270°
+
+            // Calculate how far along the arc we are
+            let diff = startAngle - angle;
+            if (diff < 0) diff += Math.PI * 2;
+            if (diff > arcRange) diff = arcRange;
+
+            const speed = (diff / arcRange) * 10;
+            return Math.max(0, Math.min(10, speed));
+        }
+
+        sphereCanvas.onmousedown = (e) => {
+            canvasRect = sphereCanvas.getBoundingClientRect();
+            const pos = getCanvasPos(e);
+            const dist = Math.sqrt(pos.x * pos.x + pos.y * pos.y);
+
+            // Normalize to HUD coordinates (-2 to 2 range, canvas is 150px)
+            const scale = 4 / canvasRect.width;
+            const hudX = pos.x * scale;
+            const hudY = pos.y * scale;
+            const hudDist = Math.sqrt(hudX * hudX + hudY * hudY);
+
+            // Determine which ring was clicked
+            if (hudDist > 1.2 && hudDist < 1.7) {
+                draggingPointer = 'theta';
+                sphereCanvas.style.cursor = 'grabbing';
+            } else if (hudDist > 0.5 && hudDist < 1.0) {
+                draggingPointer = 'phi';
+                sphereCanvas.style.cursor = 'grabbing';
+            } else {
+                draggingPointer = null;
+            }
+            e.preventDefault();
+        };
+
+        window.addEventListener('mousemove', (e) => {
+            if (!draggingPointer) return;
+
+            const pos = getCanvasPos(e);
+            const scale = 4 / canvasRect.width;
+            const hudX = pos.x * scale;
+            const hudY = pos.y * scale;
+            const angle = getAngleFromPos(hudX, hudY);
+
+            if (draggingPointer === 'theta') {
+                thetaRotateSpeed = angleToSpeed(angle);
+            } else if (draggingPointer === 'phi') {
+                phiRotateSpeed = angleToSpeed(angle);
+            }
+
+            updateSphereUI();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (draggingPointer) {
+                log(`Control: θ=${thetaRotateSpeed.toFixed(2)}, φ=${phiRotateSpeed.toFixed(2)}`, 'log-info');
+            }
+            draggingPointer = null;
+            sphereCanvas.style.cursor = 'grab';
+        });
+
+        // Warp Slider Control
+        const warpSlider = document.getElementById('warp-slider');
+        if (warpSlider) {
+            warpSlider.addEventListener('input', (e) => {
+                temporalWarp = parseFloat(e.target.value);
+                waveSpeed = temporalWarp;
+                updateSphereUI();
+            });
+        }
+
+        // Touch support
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        sphereCanvas.ontouchstart = (e) => {
+            canvasRect = sphereCanvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+
+            const x = touch.clientX - canvasRect.left - canvasRect.width / 2;
+            const y = -(touch.clientY - canvasRect.top - canvasRect.height / 2);
+            const scale = 4 / canvasRect.width;
+            const hudX = x * scale;
+            const hudY = y * scale;
+            const hudDist = Math.sqrt(hudX * hudX + hudY * hudY);
+
+            if (hudDist > 1.2 && hudDist < 1.7) {
+                draggingPointer = 'theta';
+            } else if (hudDist > 0.5 && hudDist < 1.0) {
+                draggingPointer = 'phi';
+            }
+            e.preventDefault();
+        };
+
+        window.addEventListener('touchmove', (e) => {
+            if (!draggingPointer) return;
+            const touch = e.touches[0];
+
+            const x = touch.clientX - canvasRect.left - canvasRect.width / 2;
+            const y = -(touch.clientY - canvasRect.top - canvasRect.height / 2);
+            const scale = 4 / canvasRect.width;
+            const hudX = x * scale;
+            const hudY = y * scale;
+            const angle = getAngleFromPos(hudX, hudY);
+
+            if (draggingPointer === 'theta') {
+                thetaRotateSpeed = angleToSpeed(angle);
+            } else if (draggingPointer === 'phi') {
+                phiRotateSpeed = angleToSpeed(angle);
+            }
+
+            updateSphereUI();
+            e.preventDefault();
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => {
+            draggingPointer = null;
+        });
+
+        // HUD Animation Loop
+        function animateHud() {
+            requestAnimationFrame(animateHud);
+
+            // Sync HUD pointers with main visualization
+            updateHudPointers();
+
+            hudRenderer.render(hudScene, hudCamera);
+        }
+        animateHud();
+
+        // Initialize position
+        window.updateQuantumPos();
+
+        // Wave speed (already exported above)
+        waveSpeed = 1.0;
+
+        // ============================================
+        // 🔄 ANIMATION LOOP
+        // ============================================
+
+        let time = 0;
+        let frameCount = 0;
+        let lastTime = performance.now();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update Coordinates (Subtle)
+            if (window.quantumPoint) {
+                const pos = window.quantumPoint.position;
+                document.getElementById('coord-x').textContent = pos.x.toFixed(2);
+                document.getElementById('coord-y').textContent = pos.y.toFixed(2);
+                document.getElementById('coord-z').textContent = pos.z.toFixed(2);
+
+                // Angular coordinates
+                document.getElementById('coord-theta').textContent = Math.round(orbitTheta % 360);
+                document.getElementById('coord-phi').textContent = Math.round(sectionPhi % 360);
+
+                // White point (P_m) floating label
+                const vector = pos.clone();
+                vector.project(camera);
+
+                const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (-(vector.y * 0.5) + 0.5) * window.innerHeight;
+
+                const fLabel = document.getElementById('floating-label');
+                fLabel.style.left = (x + 20) + 'px';
+                fLabel.style.top = (y - 25) + 'px';
+                fLabel.innerHTML = `P_m(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)})`;
+                fLabel.style.display = (vector.z > 1) ? 'none' : 'block';
+            }
+
+            // Pink point (P_φ) floating label
+            if (window.torusPoint) {
+                const tPos = window.torusPoint.position;
+                const tVector = tPos.clone();
+                tVector.project(camera);
+
+                const tx = (tVector.x * 0.5 + 0.5) * window.innerWidth;
+                const ty = (-(tVector.y * 0.5) + 0.5) * window.innerHeight;
+
+                const thetaVal = Math.round(orbitTheta % 360);
+                const phiVal = Math.round(sectionPhi % 360);
+
+                // Calculate opacity based on speed (faster = more transparent)
+                const combinedSpeed = (thetaRotateSpeed + phiRotateSpeed) * temporalWarp;
+                const maxSpeed = 8; // Speed at which label becomes invisible
+                const opacity = Math.max(0, 1 - (combinedSpeed / maxSpeed));
+
+                const fLabelPhi = document.getElementById('floating-label-phi');
+                fLabelPhi.style.left = (tx + 20) + 'px';
+                fLabelPhi.style.top = (ty + 10) + 'px';
+                fLabelPhi.style.opacity = opacity;
+                fLabelPhi.innerHTML = `P_φ(${tPos.x.toFixed(1)}, ${tPos.y.toFixed(1)}, ${tPos.z.toFixed(1)}) θ:${thetaVal}° φ:${phiVal}°`;
+                fLabelPhi.style.display = (tVector.z > 1) ? 'none' : 'block';
+            }
+
+            // Update time for shader
+            time += 0.016 * waveSpeed;
+            Object.values(planes).forEach(plane => {
+                plane.material.uniforms.time.value = time;
+            });
+
+            // Update controls
+            controls.update();
+
+            // Auto-rotation for Phi & Theta (Subtle)
+            if (!isPaused) {
+                sectionPhi += phiRotateSpeed * temporalWarp;
+                orbitTheta += thetaRotateSpeed * temporalWarp;
+                if (sectionPhi >= 360) sectionPhi -= 360;
+                if (orbitTheta >= 360) orbitTheta -= 360;
+                window.updateQuantumPos();
+            }
+
+            // Render scene
+            renderer.render(scene, camera);
+
+            // FPS Counter
+            frameCount++;
+            const currentTime = performance.now();
+            if (currentTime >= lastTime + 1000) {
+                document.getElementById('fps-value').textContent = frameCount;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+        }
+
+        // ============================================
+        // 📱 RESPONSIVE HANDLING
+        // ============================================
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ============================================
+        // 🚀 INITIALIZATION
+        // ============================================
+
+        // Hide loading screen after 1 second
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+            console.log('✅ Portal initialized successfully');
+            animate();
+        }, 1000);
+
+        // ============================================
+        // ⌨️ CONSOLE LOGIC
+        // ============================================
+
+        const consoleOverlay = document.getElementById('console-overlay');
+        const consoleInput = document.getElementById('console-input');
+        const consoleLog = document.getElementById('console-log');
+
+        function log(msg, type = 'log-info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `> ${msg}`;
+            consoleLog.appendChild(entry);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+            console.log(`[NONI_OS] ${msg}`);
+        }
+
+        window.toggleTerminal = toggleTerminal;
+
+        // Command Execution
+        consoleInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = consoleInput.value.trim();
+                if (cmd) {
+                    processCommand(cmd);
+                    consoleInput.value = '';
+                }
+            }
+        });
+
+        // Radius (R)
+        const pxSlider = document.getElementById('point-x');
+        if (pxSlider) {
+            pxSlider.addEventListener('input', (e) => {
+                orbitRadius = parseFloat(e.target.value);
+                window.updateQuantumPos();
+            });
+        }
+
+        // Minor Radius (r)
+        const minorRSlider = document.getElementById('minor-r');
+        if (minorRSlider) {
+            minorRSlider.addEventListener('input', (e) => {
+                minorRadius = parseFloat(e.target.value);
+                window.updateQuantumPos();
+            });
+        }
+
+        // Revolution (Theta)
+        const thetaSlider = document.getElementById('rev-theta');
+        if (thetaSlider) {
+            thetaSlider.addEventListener('input', (e) => {
+                orbitTheta = parseFloat(e.target.value);
+                window.updateQuantumPos();
+            });
+        }
+
+        // Section Phi
+        const phiSlider = document.getElementById('sec-phi');
+        if (phiSlider) {
+            phiSlider.addEventListener('input', (e) => {
+                sectionPhi = parseFloat(e.target.value);
+                window.updateQuantumPos();
+            });
+        }
+
+        // Trail Length Slider
+        const trailSlider = document.getElementById('trail-length');
+        if (trailSlider) {
+            trailSlider.addEventListener('input', (e) => {
+                currentTrailLength = parseInt(e.target.value);
+                const valDisp = document.getElementById('trail-value');
+                if (valDisp) valDisp.textContent = currentTrailLength;
+            });
+        }
+
+        // Trail Color Pickers
+        const trailColor1Picker = document.getElementById('trail-color1');
+        if (trailColor1Picker) {
+            trailColor1Picker.addEventListener('input', (e) => {
+                phiTrail.material.uniforms.color1.value = new THREE.Color(e.target.value);
+                log(`Trail start color: ${e.target.value}`, 'log-info');
+            });
+        }
+
+        const trailColor2Picker = document.getElementById('trail-color2');
+        if (trailColor2Picker) {
+            trailColor2Picker.addEventListener('input', (e) => {
+                phiTrail.material.uniforms.color2.value = new THREE.Color(e.target.value);
+                log(`Trail end color: ${e.target.value}`, 'log-info');
+            });
+        }
+
+        // Re-declaring for clarity but already defined above
+        // window.updateQuantumPos ...
+
+        function processCommand(cmdStr) {
+            log(cmdStr, 'log-info');
+            const parts = cmdStr.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            try {
+                switch (cmd) {
+                    case 'help':
+                        log('AVAILABLE COMMANDS:', 'log-info');
+                        log('  R [val]           - Set major radius', 'log-info');
+                        log('  r [val]           - Set minor radius', 'log-info');
+                        log('  theta [deg]       - Set revolution angle', 'log-info');
+                        log('  phi [deg]         - Set section angle', 'log-info');
+                        log('  clear             - Clear console', 'log-info');
+                        break;
+
+                    case 'freq':
+                        if (args[0]) window.freq(parseFloat(args[0]));
+                        break;
+
+                    case 'amp':
+                        if (args[0]) window.amp(parseFloat(args[0]));
+                        break;
+
+                    case 'speed':
+                        if (args[0]) window.speed(parseFloat(args[0]));
+                        break;
+
+                    case 'opacity':
+                        if (args[0]) window.opacity(parseFloat(args[0]));
+                        break;
+
+                    case 'color':
+                        if (args[0]) window.color(args[0]);
+                        break;
+
+                    case 'r_major':
+                    case 'R':
+                    case 'px':
+                        if (args[0]) {
+                            orbitRadius = parseFloat(args[0]);
+                            window.updateQuantumPos();
+                        }
+                        break;
+
+                    case 'r_minor':
+                    case 'r':
+                        if (args[0]) {
+                            minorRadius = parseFloat(args[0]);
+                            window.updateQuantumPos();
+                        }
+                        break;
+
+                    case 'rev':
+                    case 'theta':
+                        if (args[0]) {
+                            orbitTheta = parseFloat(args[0]);
+                            window.updateQuantumPos();
+                        }
+                        break;
+
+                    case 'phi':
+                    case 'sec':
+                        if (args[0]) {
+                            sectionPhi = parseFloat(args[0]);
+                            window.updateQuantumPos();
+                        }
+                        break;
+
+                    case 'v_theta':
+                        if (args[0]) {
+                            thetaRotateSpeed = parseFloat(args[0]);
+                            log(`Revolution speed set to ${thetaRotateSpeed}`, 'log-info');
+                        }
+                        break;
+
+                    case 'v_phi':
+                        if (args[0]) {
+                            phiRotateSpeed = parseFloat(args[0]);
+                            log(`Section speed set to ${phiRotateSpeed}`, 'log-info');
+                        }
+                        break;
+
+                    case 'warp':
+                        if (args[0]) {
+                            temporalWarp = parseFloat(args[0]);
+                            waveSpeed = temporalWarp;
+                            log(`Temporal warp set to ${temporalWarp}`, 'log-info');
+                        }
+                        break;
+
+                    case 'pause':
+                        if (!isPaused) window.togglePause();
+                        break;
+
+                    case 'play':
+                        if (isPaused) window.togglePause();
+                        break;
+
+                    case 'toggle':
+                        window.toggle(args[0]);
+                        break;
+
+                    case 'clear':
+                        consoleLog.innerHTML = '';
+                        break;
+
+                    default:
+                        log(`Unknown command: ${cmd}. Type 'help' for options.`, 'log-error');
+                }
+            } catch (e) {
+                log(`Error executing command: ${e.message}`, 'log-error');
+            }
+        }
+
+        // ============================================
+        // 🌐 GLOBAL EXPORTS (For Browser Console)
+        // ============================================
+
+        window.freq = (val) => {
+            Object.values(planes).forEach(p => p.material.uniforms.frequency.value = val);
+            const el = document.getElementById('freq-value');
+            if (el) el.textContent = val.toFixed(1);
+            log(`Frequency set to ${val}`, 'log-success');
+        };
+
+        window.amp = (val) => {
+            Object.values(planes).forEach(p => p.material.uniforms.amplitude.value = val);
+            const el = document.getElementById('amp-value');
+            if (el) el.textContent = val.toFixed(1);
+            log(`Amplitude set to ${val}`, 'log-success');
+        };
+
+        window.speed = (val) => {
+            waveSpeed = val;
+            const el = document.getElementById('speed-value');
+            if (el) el.textContent = val.toFixed(1);
+            log(`Speed set to ${val}`, 'log-success');
+        };
+
+        window.opacity = (val) => {
+            Object.values(planes).forEach(p => p.material.uniforms.opacity.value = val);
+            const el = document.getElementById('opacity-value');
+            if (el) el.textContent = val.toFixed(2);
+            log(`Opacity set to ${val}`, 'log-success');
+        };
+
+        window.color = (hex) => {
+            const col = new THREE.Color(hex);
+            Object.values(planes).forEach(p => p.material.uniforms.color.value = col);
+            log(`Global color set to ${hex}`, 'log-success');
+        };
+
+        window.toggle = (target = 'all') => {
+            if (target === 'all' || !target) {
+                const v = !planes.xy.visible;
+                Object.values(planes).forEach(p => p.visible = v);
+                log(`All planes ${v ? 'shown' : 'hidden'}`, 'log-success');
+            } else if (planes[target]) {
+                planes[target].visible = !planes[target].visible;
+                log(`Plane ${target} visibility: ${planes[target].visible}`, 'log-success');
+            }
+        };
+
+        // Redshift legacy commands for compatibility
+        window.pointX = (val) => {
+            orbitRadius = val;
+            window.updateQuantumPos();
+        };
+
+    </script>
+</body>
+
+</html>
