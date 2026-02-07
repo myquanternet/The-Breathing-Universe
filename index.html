@@ -84,12 +84,27 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--panel-border);
             border-radius: 6px;
-            padding: 25px;
+            padding: 20px;
             min-width: 260px;
             box-shadow: 0 8px 32px var(--shadow-color);
             z-index: 100;
-            transition: background 0.5s, border-color 0.5s, box-shadow 0.5s;
             transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+
+            /* Ensure long panels don't get cut off */
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-theta) transparent;
+            scrollbar-gutter: stable;
+        }
+
+        #controls-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #controls-panel::-webkit-scrollbar-thumb {
+            background: var(--accent-theta);
+            border-radius: 4px;
         }
 
         #controls-panel.minimized {
@@ -127,11 +142,26 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--panel-border);
             border-radius: 6px;
-            padding: 25px;
+            padding: 20px;
             min-width: 260px;
             box-shadow: 0 8px 32px var(--shadow-color);
             z-index: 100;
             transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-phi) transparent;
+            scrollbar-gutter: stable;
+        }
+
+        #temporal-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #temporal-panel::-webkit-scrollbar-thumb {
+            background: var(--accent-phi);
+            border-radius: 4px;
         }
 
         #temporal-panel.minimized {
@@ -141,22 +171,35 @@
         }
 
         .ui-toggle-left {
-            background: rgba(217, 79, 140, 0.05);
-            border: 1px solid rgba(217, 79, 140, 0.3);
+            background: var(--paper-bg);
+            border: 1px solid var(--panel-border);
             color: var(--accent-phi);
-            padding: 10px 18px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 20px;
             font-family: 'EB Garamond', serif;
-            font-size: 12px;
+            font-size: 13px;
             font-style: italic;
+            text-transform: capitalize;
             cursor: pointer;
-            transition: 0.3s;
-            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            letter-spacing: 0.5px;
+            z-index: 550;
         }
 
         .ui-toggle-left:hover {
-            background: rgba(217, 79, 140, 0.12);
+            transform: translateY(-1px);
             border-color: var(--accent-phi);
+            box-shadow: 0 6px 16px rgba(224, 80, 144, 0.2);
+            color: var(--accent-phi);
+        }
+
+        .ui-toggle-left::before {
+            content: '◖';
+            margin-right: 8px;
+            font-size: 10px;
+            vertical-align: middle;
+            opacity: 0.7;
         }
 
         #temporal-panel h2 {
@@ -165,7 +208,7 @@
             font-weight: 600;
             font-style: italic;
             color: var(--accent-phi);
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             letter-spacing: 1px;
             opacity: 0.9;
             border-left: 2px solid var(--accent-phi);
@@ -173,22 +216,35 @@
         }
 
         .ui-toggle-main {
-            background: rgba(79, 179, 217, 0.05);
-            border: 1px solid rgba(79, 179, 217, 0.3);
+            background: var(--paper-bg);
+            border: 1px solid var(--panel-border);
             color: var(--accent-theta);
-            padding: 10px 18px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 20px;
             font-family: 'EB Garamond', serif;
-            font-size: 12px;
+            font-size: 13px;
             font-style: italic;
+            text-transform: capitalize;
             cursor: pointer;
-            transition: 0.3s;
-            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            letter-spacing: 0.5px;
+            z-index: 550;
         }
 
         .ui-toggle-main:hover {
-            background: rgba(79, 179, 217, 0.12);
+            transform: translateY(-1px);
             border-color: var(--accent-theta);
+            box-shadow: 0 6px 16px rgba(95, 184, 216, 0.2);
+            color: var(--accent-theta);
+        }
+
+        .ui-toggle-main::after {
+            content: '◗';
+            margin-left: 8px;
+            font-size: 10px;
+            vertical-align: middle;
+            opacity: 0.7;
         }
 
         #controls-panel h2 {
@@ -197,7 +253,7 @@
             font-weight: 600;
             font-style: italic;
             color: var(--accent-theta);
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             letter-spacing: 1px;
             opacity: 0.9;
             border-left: 2px solid var(--accent-theta);
@@ -205,7 +261,7 @@
         }
 
         .control-group {
-            margin-bottom: 18px;
+            margin-bottom: 14px;
         }
 
         .ctrl-desc {
@@ -519,17 +575,19 @@
 
         #fps-counter {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            bottom: 15px;
+            left: 15px;
             background: rgba(26, 35, 50, 0.85);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(0, 212, 255, 0.3);
             border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 11px;
+            padding: 6px 10px;
+            font-size: 10px;
             color: #00d4ff;
             font-weight: 600;
-            z-index: 100;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0.7;
         }
 
         /* Custom Checkbox */
@@ -773,6 +831,151 @@
             content: '☾';
         }
 
+        /* Theory Toggle Button */
+        #theory-toggle {
+            position: fixed;
+            top: 20px;
+            left: calc(50% + 50px);
+            /* Offset from theme toggle */
+            transform: translateX(-50%);
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--ink-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px var(--shadow-color);
+        }
+
+        #theory-toggle:hover {
+            background: var(--accent-phi);
+            color: var(--paper-bg);
+            border-color: var(--accent-phi);
+        }
+
+        body.theory-mode #theory-toggle {
+            background: var(--accent-theta);
+            color: var(--paper-bg);
+            border-color: var(--accent-theta);
+            box-shadow: 0 0 10px var(--glow-theta);
+        }
+
+        /* Theory Labels (Floating) */
+        .theory-label {
+            position: fixed;
+            pointer-events: none;
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            text-align: center;
+            z-index: 850;
+            opacity: 0;
+            /* Hidden by default */
+            transition: opacity 0.5s ease;
+            background: var(--panel-bg);
+            /* Use theme bg but with high transparency via opacity if needed, or rgba override */
+            background: rgba(var(--panel-bg-rgb), 0.6);
+            /* Fallback to simple semi-transparent based on theme */
+            background: rgba(255, 255, 255, 0.4);
+
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            min-width: 160px;
+        }
+
+        [data-theme="dark"] .theory-label {
+            background: rgba(20, 20, 30, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #theory-pm {
+            color: var(--ink-primary);
+            border-left: 3px solid var(--accent-theta);
+            border-right: none;
+            border-top: none;
+            border-bottom: none;
+            padding-left: 12px;
+            /* Fixed position: Top Left - offset from panel */
+            top: 60px;
+            left: 350px;
+        }
+
+        #theory-pphi {
+            color: var(--accent-phi);
+            border-right: 3px solid var(--accent-phi);
+            border-left: none;
+            border-top: none;
+            border-bottom: none;
+            text-align: right;
+            padding-right: 12px;
+            /* Fixed position: Top Right - offset from panel */
+            top: 60px;
+            right: 350px;
+            left: auto;
+        }
+
+        .theory-label strong {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .theory-coord {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: var(--ink-muted);
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+
+        .theory-sub {
+            font-family: 'Verdana', sans-serif;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        /* Fixed Label for Warp */
+        .theory-label-fixed {
+            position: absolute;
+            left: 25px;
+            /* Aligned with panel content */
+            bottom: 60px;
+            /* Positioned near Warp Slider */
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            color: var(--accent-warp);
+            opacity: 0;
+            /* Hidden by default */
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            background: rgba(128, 128, 128, 0.1);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px dashed var(--accent-warp);
+            z-index: 200;
+        }
+
+        /* Show labels when active */
+        body.theory-mode .theory-label,
+        body.theory-mode .theory-label-fixed {
+            opacity: 1;
+        }
+
         /* Utility color classes */
         .theta-color {
             color: var(--accent-theta);
@@ -827,6 +1030,35 @@
     <!-- Theme Toggle -->
     <button id="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">☀</button>
 
+    <!-- Theory Toggle -->
+    <button id="theory-toggle" onclick="toggleTheoryMode()" title="Show/Hide Theoretical Concepts">👁</button>
+
+    <!-- Theory Annotations (Hidden by default) -->
+    <!-- Theory Annotations (Hidden by default) -->
+    <div id="theory-pm" class="theory-label">
+        <strong>The "Doing"</strong>
+        <div id="theory-coord-pm" class="theory-coord" style="font-size: 11px; margin: 4px 0; opacity: 0.9;"></div>
+        <span class="theory-sub">Physical Manifold (Space)</span>
+    </div>
+    <div id="theory-pphi" class="theory-label">
+        <strong>The "Being"</strong>
+        <div id="theory-coord-pphi" class="theory-coord" style="font-size: 11px; margin: 4px 0; opacity: 0.9;"></div>
+        <span class="theory-sub">Internal State (Time)</span>
+    </div>
+    <div id="theory-warp" class="theory-label-fixed">
+        <strong>Time Density</strong><br>
+        <span class="theory-sub">Compresses Cycles</span>
+    </div>
+
+    <!-- SVG Leader Curves -->
+    <svg id="theory-leaders"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 800; opacity: 0; transition: opacity 0.5s;">
+        <path id="leader-pm" d="M 0 0 Q 0 0 0 0" fill="none" stroke="var(--accent-theta)" stroke-width="1.5"
+            stroke-dasharray="6,4" stroke-opacity="0.15" />
+        <path id="leader-pphi" d="M 0 0 Q 0 0 0 0" fill="none" stroke="var(--accent-phi)" stroke-width="1.5"
+            stroke-dasharray="6,4" stroke-opacity="0.15" />
+    </svg>
+
     <!-- Info Panel -->
     <div id="info-panel">
         <h1>🌌 The Breathing Universe</h1>
@@ -864,7 +1096,7 @@
             <div class="control-group" style="margin-top: 15px;">
                 <label style="color: #ffd700; font-size: 11px;">⚡ WARP <span class="value-display" id="sphere-warp-val"
                         style="color: #ffd700;">1.0</span>x</label>
-                <input type="range" id="warp-slider" min="0.1" max="10" step="0.1" value="1"
+                <input type="range" id="warp-slider" min="0.1" max="10" step="0.01" value="1"
                     style="accent-color: #ffd700;">
                 <div style="font-size: 8px; color: #6a7a8a; text-align: center; margin-top: 3px;">Speed up or slow down
                     time</div>
@@ -882,46 +1114,48 @@
 
             <div class="control-group">
                 <label>O:M Radius (Major R) <span class="value-display" id="px-value">25.0</span></label>
-                <input type="range" id="point-x" min="0" max="50" step="0.5" value="25">
+                <input type="range" id="point-x" min="0" max="100" step="0.1" value="25">
                 <div class="ctrl-desc">Distance from center to torus tube</div>
             </div>
 
             <div class="control-group">
                 <label>Minor Radius (r) <span class="value-display" id="minor-r-value">10.0</span></label>
-                <input type="range" id="minor-r" min="0" max="30" step="0.5" value="10">
+                <input type="range" id="minor-r" min="0" max="50" step="0.1" value="10">
                 <div class="ctrl-desc">Thickness of the torus tube</div>
             </div>
 
             <div class="control-group">
                 <label>Theta (Manual) <span class="value-display" id="theta-value">0°</span></label>
-                <input type="range" id="rev-theta" min="0" max="360" step="1" value="0">
+                <input type="range" id="rev-theta" min="0" max="360" step="0.5" value="0">
                 <div class="ctrl-desc">Manual angle around major axis</div>
             </div>
 
             <div class="control-group">
                 <label>Phi (Manual) <span class="value-display" id="phi-value">0°</span></label>
-                <input type="range" id="sec-phi" min="0" max="360" step="1" value="0">
+                <input type="range" id="sec-phi" min="0" max="360" step="0.5" value="0">
                 <div class="ctrl-desc">Manual angle in tube section</div>
             </div>
 
             <div class="control-group">
-                <label>Trail Length <span class="value-display" id="trail-value">1000</span></label>
-                <input type="range" id="trail-length" min="10" max="2000" step="10" value="1000">
+                <label>Trail Length <span class="value-display" id="trail-value">2500</span></label>
+                <input type="range" id="trail-length" min="0" max="10000" step="1" value="2500">
                 <div class="ctrl-desc">Number of trail points</div>
             </div>
 
-            <div class="control-group">
-                <label style="font-size: 10px; margin-bottom: 5px;">Trail Colors</label>
-                <div style="display: flex; gap: 10px;">
-                    <div style="flex: 1; text-align: center;">
+            <div class="control-group" style="padding-bottom: 25px;">
+                <label
+                    style="font-size: 11px; margin-bottom: 8px; display: block; color: var(--accent-theta); opacity: 0.8;">Trail
+                    Gradient Colors</label>
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
                         <input type="color" id="trail-color1" value="#ff00aa"
-                            style="width: 100%; height: 25px; border: none; border-radius: 4px; cursor: pointer;">
-                        <div class="ctrl-desc">Start</div>
+                            style="width: 100%; height: 35px; border: 1px solid var(--panel-border); border-radius: 6px; cursor: pointer; background: rgba(0,0,0,0.05); padding: 4px; box-shadow: 0 0 10px rgba(255, 0, 170, 0.2);">
+                        <div class="ctrl-desc" style="margin-top: 6px; font-size: 10px;">Start Point</div>
                     </div>
-                    <div style="flex: 1; text-align: center;">
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
                         <input type="color" id="trail-color2" value="#00ffff"
-                            style="width: 100%; height: 25px; border: none; border-radius: 4px; cursor: pointer;">
-                        <div class="ctrl-desc">End</div>
+                            style="width: 100%; height: 35px; border: 1px solid var(--panel-border); border-radius: 6px; cursor: pointer; background: rgba(0,0,0,0.05); padding: 4px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">
+                        <div class="ctrl-desc" style="margin-top: 6px; font-size: 10px;">End Point</div>
                     </div>
                 </div>
             </div>
@@ -959,6 +1193,20 @@
                 const bgColor = new THREE.Color(isDarkTheme ? 0x0d1117 : 0xf5f3ef);
                 scene.background = bgColor;
                 scene.fog.color = bgColor;
+
+                // Adjust opacities and colors for better visibility in light theme
+                if (window.revPath) window.revPath.material.uniforms.opacity.value = isDarkTheme ? 0.3 : 0.6;
+                if (window.secPath) window.secPath.material.uniforms.opacity.value = isDarkTheme ? 0.3 : 0.6;
+                if (window.gridHelper) window.gridHelper.material.opacity = isDarkTheme ? 0.15 : 0.4;
+
+                // P_m (White/Cyan) visibility
+                if (window.quantumPoint) {
+                    window.quantumPoint.material.color.set(isDarkTheme ? 0xffffff : 0x00aaff);
+                    if (window.quantumPoint.children[0]) {
+                        window.quantumPoint.children[0].material.color.set(isDarkTheme ? 0xffffff : 0x00aaff);
+                        window.quantumPoint.children[0].material.opacity = isDarkTheme ? 0.3 : 0.1;
+                    }
+                }
             }
         }
 
@@ -968,6 +1216,20 @@
             document.getElementById('theme-toggle').textContent = '☾';
         }
         window.toggleTheme = toggleTheme;
+
+        // Theory Mode Toggle
+        let isTheoryMode = false;
+        function toggleTheoryMode() {
+            isTheoryMode = !isTheoryMode;
+            if (isTheoryMode) {
+                document.body.classList.add('theory-mode');
+                document.getElementById('theory-leaders').style.opacity = '1';
+            } else {
+                document.body.classList.remove('theory-mode');
+                document.getElementById('theory-leaders').style.opacity = '0';
+            }
+        }
+        window.toggleTheoryMode = toggleTheoryMode;
 
         // Scene Setup
         const scene = new THREE.Scene();
@@ -1063,7 +1325,7 @@
             uniforms: {
                 color1: { value: new THREE.Color(0x00d4ff) },
                 color2: { value: new THREE.Color(0x0055ff) },
-                opacity: { value: 0.3 }
+                opacity: { value: 0.6 }
             },
             vertexShader: `
                 varying vec2 vUv;
@@ -1089,7 +1351,7 @@
             uniforms: {
                 color1: { value: new THREE.Color(0xff00aa) },
                 color2: { value: new THREE.Color(0x8800ff) },
-                opacity: { value: 0.3 }
+                opacity: { value: 0.6 }
             },
             vertexShader: `
                 varying vec2 vUv;
@@ -1129,7 +1391,8 @@
                 varying float vAlpha;
                 void main() {
                     vec3 gradientColor = mix(color1, color2, 1.0 - vAlpha);
-                    gl_FragColor = vec4(gradientColor, vAlpha * 0.7);
+                    // Higher multiplier for better visibility on light backgrounds
+                    gl_FragColor = vec4(gradientColor, vAlpha * 0.9);
                 }
             `
         };
@@ -1204,6 +1467,7 @@
         gridHelper.material.transparent = true;
         gridHelper.material.opacity = 0.15;
         scene.add(gridHelper);
+        window.gridHelper = gridHelper;
 
         // --- UTILS ---
         function log(msg, type = '') {
@@ -1276,6 +1540,8 @@
         let sectionPhi = 0;
         let thetaRotateSpeed = 0.1;
         let phiRotateSpeed = 0.2;
+        let targetThetaSpeed = 0.1;
+        let targetPhiSpeed = 0.2;
         let temporalWarp = 1.0;
         let isPaused = false;
         let waveSpeed = 1.0;
@@ -1307,10 +1573,11 @@
         });
         const secPath = new THREE.Mesh(secPathGeo, secPathMat);
         scene.add(secPath);
+        window.secPath = secPath;
 
         // --- TRAIL FOR TORUS POINT ---
-        let trailMaxPoints = 2000; // Buffer size
-        let currentTrailLength = 1000;
+        let trailMaxPoints = 10000; // Buffer size
+        let currentTrailLength = 2500;
         const trailPositions = new Float32Array(trailMaxPoints * 3);
         const trailAlphas = new Float32Array(trailMaxPoints);
         for (let i = 0; i < trailMaxPoints; i++) trailAlphas[i] = 1.0 - (i / currentTrailLength);
@@ -1328,6 +1595,7 @@
         });
         const phiTrail = new THREE.Line(trailGeo, trailMat);
         scene.add(phiTrail);
+        window.phiTrail = phiTrail;
 
         // --- TORUS SURFACE POINT ---
         const torusPoint = new THREE.Mesh(
@@ -1580,9 +1848,8 @@
         let canvasRect = null;
 
         const updateSphereUI = () => {
-            document.getElementById('sphere-theta-val').textContent = thetaRotateSpeed.toFixed(2);
-            document.getElementById('sphere-phi-val').textContent = phiRotateSpeed.toFixed(2);
-            document.getElementById('sphere-warp-val').textContent = temporalWarp.toFixed(1);
+            // Static value for Warp (slider based)
+            document.getElementById('sphere-warp-val').textContent = temporalWarp.toFixed(2);
             updateHudPointers();
         };
 
@@ -1648,9 +1915,9 @@
             const angle = getAngleFromPos(hudX, hudY);
 
             if (draggingPointer === 'theta') {
-                thetaRotateSpeed = angleToSpeed(angle);
+                targetThetaSpeed = angleToSpeed(angle);
             } else if (draggingPointer === 'phi') {
-                phiRotateSpeed = angleToSpeed(angle);
+                targetPhiSpeed = angleToSpeed(angle);
             }
 
             updateSphereUI();
@@ -1711,9 +1978,9 @@
             const angle = getAngleFromPos(hudX, hudY);
 
             if (draggingPointer === 'theta') {
-                thetaRotateSpeed = angleToSpeed(angle);
+                targetThetaSpeed = angleToSpeed(angle);
             } else if (draggingPointer === 'phi') {
-                phiRotateSpeed = angleToSpeed(angle);
+                targetPhiSpeed = angleToSpeed(angle);
             }
 
             updateSphereUI();
@@ -1752,6 +2019,17 @@
         function animate() {
             requestAnimationFrame(animate);
 
+            // Smooth Speed Transitions (LERP - reduces sensitivity)
+            const smoothing = 0.08;
+            thetaRotateSpeed += (targetThetaSpeed - thetaRotateSpeed) * smoothing;
+            phiRotateSpeed += (targetPhiSpeed - phiRotateSpeed) * smoothing;
+
+            // Also update the UI value displays to show the smoothed values
+            if (document.getElementById('sphere-theta-val'))
+                document.getElementById('sphere-theta-val').textContent = thetaRotateSpeed.toFixed(2);
+            if (document.getElementById('sphere-phi-val'))
+                document.getElementById('sphere-phi-val').textContent = phiRotateSpeed.toFixed(2);
+
             // Update Coordinates (Subtle)
             if (window.quantumPoint) {
                 const pos = window.quantumPoint.position;
@@ -1775,6 +2053,29 @@
                 fLabel.style.top = (y - 25) + 'px';
                 fLabel.innerHTML = `P_m(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)})`;
                 fLabel.style.display = (vector.z > 1) ? 'none' : 'block';
+
+                // Update Theory Label for P_m
+                if (isTheoryMode) {
+                    // Hide standard label to avoid duplicate
+                    fLabel.style.display = 'none';
+
+                    // Update coordinates text (label is fixed, only update content)
+                    const tCoordPm = document.getElementById('theory-coord-pm');
+                    tCoordPm.textContent = `P_m(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)})`;
+
+                    // Update leader curve (from label corner to point)
+                    const leaderPm = document.getElementById('leader-pm');
+                    const labelPm = document.getElementById('theory-pm');
+                    const labelRect = labelPm.getBoundingClientRect();
+                    // Curve starts from bottom-right of label, ends at point
+                    const x1 = labelRect.right;
+                    const y1 = labelRect.bottom;
+                    // Control point: horizontal from start, then vertical drop
+                    const cx = x;
+                    const cy = y1;
+                    // Path: M (move to start) Q (quadratic bezier with control point)
+                    leaderPm.setAttribute('d', `M ${x1} ${y1} Q ${cx} ${cy} ${x} ${y}`);
+                }
             }
 
             // Pink point (P_φ) floating label
@@ -1800,6 +2101,29 @@
                 fLabelPhi.style.opacity = opacity;
                 fLabelPhi.innerHTML = `P_φ(${tPos.x.toFixed(1)}, ${tPos.y.toFixed(1)}, ${tPos.z.toFixed(1)}) θ:${thetaVal}° φ:${phiVal}°`;
                 fLabelPhi.style.display = (tVector.z > 1) ? 'none' : 'block';
+
+                // Update Theory Label for P_phi
+                if (isTheoryMode) {
+                    // Hide standard label
+                    fLabelPhi.style.display = 'none';
+
+                    // Update coordinates text (label is fixed, only update content)
+                    const tCoordPhi = document.getElementById('theory-coord-pphi');
+                    tCoordPhi.innerHTML = `P_φ(${tPos.x.toFixed(1)}, ${tPos.y.toFixed(1)}, ${tPos.z.toFixed(1)})<br>θ:${thetaVal}° φ:${phiVal}°`;
+
+                    // Update leader curve (from label corner to point)
+                    const leaderPhi = document.getElementById('leader-pphi');
+                    const labelPhi = document.getElementById('theory-pphi');
+                    const labelRectPhi = labelPhi.getBoundingClientRect();
+                    // Curve starts from bottom-left of label, ends at point
+                    const tx1 = labelRectPhi.left;
+                    const ty1 = labelRectPhi.bottom;
+                    // Control point: horizontal from start, then vertical drop
+                    const tcx = tx;
+                    const tcy = ty1;
+                    // Path: M (move to start) Q (quadratic bezier with control point)
+                    leaderPhi.setAttribute('d', `M ${tx1} ${ty1} Q ${tcx} ${tcy} ${tx} ${ty}`);
+                }
             }
 
             // Update time for shader
