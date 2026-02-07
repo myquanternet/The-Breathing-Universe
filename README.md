@@ -8,6 +8,26 @@ This project is a scientific visualization portal designed to explore the geomet
 ## 📐 The Geometric Diagram: Technical Relationship
 The core of the visualization is built upon a **Toroidal Coordinate System**, where the relationship between the diagram and the graphical representation is defined by two primary angular dimensions:
 
+### Visual Concepts & Mapping
+```mermaid
+graph TD
+    subgraph "HUD Interface (2D)"
+        HUD_Theta[Cyan Dial: θ]
+        HUD_Phi[Magenta Dial: φ]
+    end
+
+    subgraph "Mathematical Transformation"
+        HUD_Theta -->|Angular Velocity| Orbit_Macro[Major Revolution]
+        HUD_Phi -->|Angular Velocity| Orbit_Micro[Minor Section]
+    end
+
+    subgraph "3D Spacetime Output"
+        Orbit_Macro -->|Coordinate P_m| WhitePoint(Point of Motion)
+        Orbit_Micro -->|Coordinate P_φ| PinkPoint(Torus Phase)
+        Warp[Temporal Warp] -->|Frequencies| Interaction[Breathing Effect]
+    end
+```
+
 ### 1. The $\theta$ Dimension (Major Revolution)
 - **Represented by:** The outer cyan circle in the HUD.
 - **Graphic Logic:** Governs the "orbital" motion around the major axis of the torus. It represents the macro-scale revolution of the "Point of Motion" ($P_m$).
@@ -18,11 +38,13 @@ The core of the visualization is built upon a **Toroidal Coordinate System**, wh
 - **Graphic Logic:** Governs the "tubular" rotation within the cross-section of the torus. It represents the micro-scale phase of the "Torus Point" ($P_\phi$).
 - **Interaction:** Dragging the magenta HUD pointer adjusts the spinning speed within the torus tube.
 
-### 3. Point Entanglement ($P_m$ & $P_\phi$)
-The visualization tracks two critical mathematical definitions:
-- **$P_m$ (White Point):** The primary coordinate in the global space.
-- **$P_\phi$ (Pink Point):** The relative coordinate reflecting the internal state/section of the unified geometry.
-The "Breathing" effect is the emergent result of these two frequencies interacting under the influence of the **Temporal Warp** ($Warp_x$).
+### Toroidal Mapping Logic
+The position $(X, Y, Z)$ of any point on the torus is calculated using:
+- $X = (R + r \cdot \cos(\phi)) \cdot \cos(\theta)$
+- $Y = (R + r \cdot \cos(\phi)) \cdot \sin(\theta)$
+- $Z = r \cdot \sin(\phi)$
+
+Where **R** is the Major Radius and **r** is the Minor Radius.
 
 ## ✨ Features
 - **Neo-Euclid Theme:** A scientific aesthetic inspired by historical mathematical treatises, featuring LaTeX-style typography and parchment textures.
