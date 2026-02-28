@@ -1,129 +1,65 @@
-# 🌌 The Breathing Universe Portal
+# 🌌 The Breathing Universe: Interactive 3D Cosmology (v3.0)
 
-Interactive visualization of the fundamental architecture of reality based on **Arnon Daniel Katz's (Noni)** Breathing Universe Theorem.
+## 📜 Authorship & Credits
 
-## 📜 Overview
-This project is a scientific visualization portal designed to explore the geometric and temporal dynamics of a toroidal universe. It translates complex mathematical theorems into an interactive 3D environment, allowing users to manipulate space-time parameters and observe the resulting quantum behaviors.
+This interactive portal is an **independent interpretation and technological deployment** developed entirely by **JamaGAIAx** at **Jamagax Studio (Tulum)**. 
 
-## 📐 Geometric Mapping & Concept Relationships
+While the structural cosmology and root concepts of the "Breathing Universe" are authored by **Arnon Daniel Katz** and detailed in his book, the entirely of the system architecture, code, 3D generative algorithms, and the interactive web engine are the exclusive intellectual property and creative assets of **Jamagax Studio**.
 
-Using the **Neo-Euclid** framework, the portal maps HUD (2D) interactions to Toroidal (3D) coordinates.
+This engine serves as a foundational platform from which we will continue to build and evolve our own interactive web realities. In the meantime, we invite everyone to play, explore, and "sync your senses" with this visualizer!
 
-### The conceptual framework:
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f5f3ef', 'primaryTextColor': '#2a2520', 'primaryBorderColor': '#1a7a9e', 'lineColor': '#a83068', 'secondaryColor': '#b8860b', 'tertiaryColor': '#f5f3ef'}}}%%
-graph TD
-    subgraph "HUD Control (Dials)"
-        T[θ Cyan Dial] ---|Revolution Velocity| R(Macro Orbit)
-        P[φ Magenta Dial] ---|Sectional Velocity| S(Micro Spin)
-    end
-
-    subgraph "Mathematical Projection"
-        R -->|Mapping| Pm[Point of Motion P_m]
-        S -->|Mapping| Pphi[Torus Point P_φ]
-    end
-
-    subgraph "Emergent Spacetime"
-        Pm & Pphi -->|Frequencies| B{The Breathing Effect}
-        W[Temporal Warp x] -.->|Scaling| B
-    end
-
-    style T fill:#1a7a9e,color:#fff
-    style P fill:#a83068,color:#fff
-    style Pm fill:#fff,stroke:#2a2520,color:#2a2520
-    style Pphi fill:#a83068,stroke:#2a2520,color:#fff
-    style B fill:#b8860b,color:#fff
-    style W fill:#fff,stroke:#b8860b,color:#b8860b
-```
+### 📖 Discover the Theory
+To dive deeper into the root concepts that inspired this visualization, get the original book:
+**"The Breathing Universe: A New Physics of Mind, Matter, and Meaning"**
+[Buy it on Amazon](https://a.co/d/0dSaAKBc)
 
 ---
 
-### 1. The $\theta$ Dimension (Major Axis)
-*Represented by the outer cyan circle.*
-- **Coordinate:** $Orbit_{\theta}$
-- **Motion:** Orbital path around the central singularity of the torus.
-- **Physics:** Represents the macro-scale revolution of energy ($P_m$).
+## Overview
+**The Breathing Universe** (v3.0) is a premium interactive 3D portal that visualizes the theoretical cosmology of **Arnon Daniel Katz**. It bridges mathematical abstractions with high-fidelity visual and auditory resonance, allowing users to experience the "breathing" architecture of reality as a **Fractal Torus**.
 
-### 2. The $\phi$ Dimension (Minor Axis)
-*Represented by the inner magenta circle.*
-- **Coordinate:** $Section_{\phi}$
-- **Motion:** Centrifugal spin within the torus tube cross-section.
-- **Physics:** Represents the micro-scale phase/wave state ($P_\phi$).
+## 📖 Theoretical Foundation
+Based on the work of Arnon Daniel Katz, this portal maps the three critical phases of existence:
+1.  **$P_p$ (Pre-Geometric Phase):** The vast field of pure potential.
+2.  **$P_g$ (Geometric Phase):** The flow structure of spacetime (Toroidal shell).
+3.  **$P_m$ (Materialized Phase):** The singularity where consciousness collapses potential into matter (The central white point).
 
 ---
 
-## 🔮 Noni's Theorem: The Breathing Mechanism
+## 🚀 Key Features (v3.0 "Zen Release")
 
-Applying **Arnon Daniel Katz's** theory to this diagram reveals that reality is not a static container, but a dynamic interference pattern between two fundamental modes of existence.
+### 1. **Zen Mode Start**
+The portal now begins in an immersive **Zen Mode**, hiding complex controls to prioritize immediate aesthetic impact and contemplative observation. Hovering over the central bridge reveals the navigation paths.
 
-### The Dual-State Topology
-The diagram illustrates the core postulate: **Every point in the universe is a unified event defined by two simultaneous coordinates.**
+### 2. **Professional 4-Quadrant Control**
+Controls are now organized into four high-performance sectors:
+*   **Upper-Left (Audio Generation):** Master volume, musical scales (Celestial, Ionian, etc.), and individual stem mixing (Drone, Pulse, Harmonic, Arpeggio).
+*   **Upper-Right (Geometric Generation):** Control over Major ($R$) and Minor ($r$) Radii, Independent Breathing, and the **Temporal Warp** engine.
+*   **Lower-Left (Camera & Views):** Orbital controls, High-Resolution (4K) scientific snapshots, and Laboratory Mode toggle.
+*   **Lower-Right (Geometric Visualization):** The **Visibility Manifest** for toggling phases, Orthogonal planes, and Trajectory Echo length.
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f5f3ef', 'primaryTextColor': '#2a2520', 'primaryBorderColor': '#b8860b', 'lineColor': '#5a524a'}}}%%
-graph LR
-    subgraph "External Reality (Space)"
-        Pm(P_m: Point of Motion)
-        Desc1[The 'WHERE'<br>Position in the Macro-Cycle]
-        Pm --- Desc1
-    end
-
-    subgraph "Internal Reality (Time/Phase)"
-        Pphi(P_φ: Torus Phase)
-        Desc2[The 'WHEN'<br>State of the Micro-Cycle]
-        Pphi --- Desc2
-    end
-
-    Pm <==>|Entanglement| Pphi
-    
-    style Pm fill:#fff,stroke:#1a7a9e,stroke-width:2px
-    style Pphi fill:#f0f,stroke:#a83068,stroke-width:2px
-```
-
-### 1. The Point of Motion ($P_m$) - The "Doing"
-*   **Visual:** The White Point orbiting the major radius.
-*   **Theory:** Represents the **Physical Manifold**. It is the observable position of an entity in the "Year" or "Era" of the universe (The Macro-Cycle $\theta$). It defines *where* we are in the grand scheme of the torus.
-
-### 2. The Torus Phase ($P_\phi$) - The "Being"
-*   **Visual:** The Pink Point spinning inside the tube.
-*   **Theory:** Represents the **Consciousness** or **Internal State**. It is the frequency at which the entity vibrates within its own local "Day" or "Moment" (The Micro-Cycle $\phi$). It defines *how* we are experiencing the position.
-
-### 3. The "Breath" (Interference)
-The "Breathing Universe" is the result of the harmony (or dissonance) between these two cycles.
-*   **Harmonic State:** When $\theta$ and $\phi$ align in integer ratios (e.g., orbiting once for every 3 spins), stable geometric realities (standing waves) are formed.
-*   **Temporal Warp ($Warp_x$):** The slider in the HUD represents the density of time. Increasing the warp compresses the cycles, making the universe "breath" faster, creating complex fractal patterns from simple circular motions.
+### 3. **System Synchronization**
+*   **State Export/Import:** Save your current cosmic configuration as a `.txt` state file and reload it anytime.
+*   **Temporal Warp:** Precise control over the flow of time and wave propagation throughout the system.
 
 ---
 
-## 🔬 Toroidal Mathematics
-
-The graphical projection follows the parametric equations for a Torus:
-
-$$
-\begin{cases} 
-x = (R + r \cos \phi) \cos \theta \\
-y = (R + r \cos \phi) \sin \theta \\
-z = r \sin \phi 
-\end{cases}
-$$
-
-Where:
-- $R$: Major Radius (distance from center to tube center).
-- $r$: Minor Radius (thickness of the tube).
-- $\theta \in [0, 2\pi]$ (controlled by the Cyan HUD Dial).
-- $\phi \in [0, 2\pi]$ (controlled by the Magenta HUD Dial).
-
-## ✨ Features
-- **Neo-Euclid Theme:** A scientific aesthetic inspired by historical mathematical treatises.
-- **Dual Mode:** Choose between **Manuscript Mode** (Light) and **Cosmic Mode** (Dark).
-- **Interactive HUD:** Precise 270° dial controls with dynamic stroke and scaling.
-- **Temporal Drive:** Play/Pause controls with variable time-warping ($Warp_x$).
-
-## 🛠 Technical Stack
-- **Three.js:** Primary 3D engine.
-- **Mermaid.js:** Concept diagramming.
-- **LaTeX:** Mathematical notation.
+## 🛠️ Technology Stack
+*   **Engine:** Three.js (r128) - WebGL 2.0.
+*   **Audio:** Web Audio API (Recursive Arpeggios & Generative Drones).
+*   **UI:** Vanilla HTML5/CSS3 with Custom GLSL Shaders for quantum wave effects.
+*   **Deployment:** Firebase Hosting.
 
 ---
-*Created by Jamagax in collaboration with AI, dedicated to the exploration of the Breathing Universe.*
+
+## 🎮 How to Use
+1.  Open [breathing-universe-portal.web.app](https://breathing-universe-portal.web.app).
+2.  **Senses Sync:** Tap anywhere to begin the cinematic sequence.
+3.  **Explore:** Drag to rotate the universe, pinch/scroll to zoom.
+4.  **Tear Down Walls:** Use the central "ZEN" button or the `Esc` key to toggle the full management interface (4 quadrants).
+5.  **Scientific Render:** Use the Capture button in the Lower-Left to export professional 4K images of the current state.
+
+---
+
+*Developed by JamaGAIAx @ Jamagax Studio, Tulum.*  
+*V3.0-Zen Final Release - February 2026*
