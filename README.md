@@ -63,3 +63,15 @@ Controls are now organized into four high-performance sectors:
 
 *Developed by JamaGAIAx @ Jamagax Studio, Tulum.*  
 *V3.0-Zen Final Release - February 2026*
+
+---
+
+## License
+
+Code contributed by Arnon Daniel Katz is licensed under the GNU Affero General Public License version 3.0. The full official text is in [LICENSE](LICENSE).
+
+Documentation, diagrams, and other content contributed by Arnon Daniel Katz are licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. The full official legal code is in [LICENSE-CONTENT](LICENSE-CONTENT).
+
+This repository was forked from [Jamagax/The-Breathing-Universe](https://github.com/Jamagax/The-Breathing-Universe). Upstream material remains under its authors' rights unless they agree otherwise. The preexisting files in this repository match that upstream project and stay under its authors' rights.
+
+Copyright Arnon Daniel Katz for his contributions.
